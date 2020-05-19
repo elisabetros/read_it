@@ -22,8 +22,8 @@ const App = () => {
     <div className="App">
       <Router>
         <nav>
+          <li class="logo">READ IT</li>
           <li><NavLink exact to= "/" >Home</NavLink></li>
-          <li><NavLink exact to= "/Search" >Search</NavLink></li>
           <li><NavLink to= "/signup" >Signup</NavLink></li>
           <li><NavLink exact to= "/login" >Login</NavLink></li>
           <li><NavLink exact to= "/profile" >Profile</NavLink></li>
@@ -31,14 +31,14 @@ const App = () => {
       
      
       <Switch>
+        <Route exact path="/"
+        component={() => <Search />}/>
         <Route path="/signup"  
         component={() => <Signup/>}/>
         <Route path="/login"  
         component={() => <Login />}/>
         <Route path="/profile"  
         component={() => <Profile />}/>
-        <Route path="/search"  
-        component={() => <Search />}/>
         
         
       </Switch>

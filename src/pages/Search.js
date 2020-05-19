@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import axios from 'axios'
 import SearchResult from '../components/SearchResult'
 import formCss from '../css/form.css'
+import searchResultcss from '../css/searchResults.css'
 
 
 import apiCred from '../config/api'
@@ -39,12 +40,14 @@ const Search = () => {
             <input type="text" placeholder="Search by book title" onChange={(e)=>setSearchString(e.target.value)}/>
             <button onClick={(e)=> handleSearch(e)} disabled={validateForm()}>Search</button>
         </form>
+        <div className="searchResultContainer">
         {searchResults?
             searchResults.map(result=> {
-                return <SearchResult {...result.volumeInfo} />
+                return <SearchResult {...result.volumeInfo} key={result.volumeInfo.title+result.volumeInfo.id} />
             })
         : null}
-            {/* <SearchResults results={searchResults} /> */}
+        </div>
+           
             
         
         </>

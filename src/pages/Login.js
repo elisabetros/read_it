@@ -26,7 +26,7 @@ const Login = () => {
         <div className="loginPage">
         <form method="post">
             <div className="error">{error}</div>
-            <h2>Please log in</h2>
+            <h1>Please log in</h1>
             <label >
                 <p>Email</p>
                 <input type="text" onChange={(e) => setEmail(e.target.value)} />
