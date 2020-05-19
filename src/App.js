@@ -1,22 +1,48 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, NavLink, Switch  } from 'react-router-dom';
 import './App.css';
+
+import Signup from './pages/Signup'
+import Login from './pages/Login'
+
 import axios from 'axios'
-const apiCred = require('./config/api')
+
+
+import apiCred from './config/api' 
+import Profile from './pages/Profile';
+import Search from './pages/Search';
 
 
 
 console.log(apiCred.key)
 
 const App = () => {
-  async function fetch(){
-
-    const response = await axios(`https://www.googleapis.com/books/v1/volumes?q=&keys:${apiCred.key}`)
-    console.log(response.data.items)
-  }
-  fetch()
+ 
   return (
     <div className="App">
+      <Router>
+        <nav>
+          <li><NavLink exact to= "/" >Home</NavLink></li>
+          <li><NavLink exact to= "/Search" >Search</NavLink></li>
+          <li><NavLink to= "/signup" >Signup</NavLink></li>
+          <li><NavLink exact to= "/login" >Login</NavLink></li>
+          <li><NavLink exact to= "/profile" >Profile</NavLink></li>
+        </nav>
+      
      
+      <Switch>
+        <Route path="/signup"  
+        component={() => <Signup/>}/>
+        <Route path="/login"  
+        component={() => <Login />}/>
+        <Route path="/profile"  
+        component={() => <Profile />}/>
+        <Route path="/search"  
+        component={() => <Search />}/>
+        
+        
+      </Switch>
+    </Router>
     </div>
   );
 }

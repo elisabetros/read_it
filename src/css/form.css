@@ -1,0 +1,23 @@
+form{
+    display:grid;
+    grid-template-columns: 1fr;
+    margin: auto;
+    width:50vw;
+}
+label{
+    grid-template-columns: 1fr;
+}
+p, input{
+    text-align: left;
+    margin:0;
+}
+p{
+    margin-top:5%;
+}
+input{
+    padding:10px;
+    width: 100%;    
+  border-radius: 10px;
+  border:none;
+}
+
