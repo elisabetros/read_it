@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import formCss from '../css/form.css'
 
-const Login = () => {
+const Login = (props) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [ error, setError ] = useState('')
@@ -18,7 +18,8 @@ const Login = () => {
             const response = await axios.post("http://localhost/user/login", {
                 email, password
             })
-            console.log(response)
+            console.log(response.data)
+            props.history.push('/profile')
         }
     }
 

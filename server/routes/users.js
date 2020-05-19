@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const credentials = require("../config/emailcredentials")
-const jwt = require('jsonwebtoken')
 
 var privateKey = 'privateKey';
 
@@ -10,7 +9,9 @@ const saltRounds = 10;
 const User = require("../models/User");
 
 router.post('/user/login', async (req, res) => {
+    console.log('login')
     const { email, password } = req.body;
+    console.log(email, password)
     if(!email || !password){
         return res.status(500).send({error: "missing fields"})
     }
@@ -19,6 +20,7 @@ router.post('/user/login', async (req, res) => {
     if(!user){
         return res.status(404).send({ error: 'wrong username' })
     }
+    console.log(user)
     bcrypt.compare(password, user.password, (error, isSame) => {
         if(error){
             return res.status(500).send({ error:'error' })
@@ -26,12 +28,21 @@ router.post('/user/login', async (req, res) => {
         if(!isSame){
             return res.status(404).send({ error: 'wrong password' })
         }else{
-            jwt.sign({user}, privateKey, { expiresIn: '12h' },(err, token) => {
-                if(err) { console.log(err) }    
-                return res.status(200).send(token);
-            });
+            req.session.user = user;
+            delete req.session.user.password;
+            req.session.isLoggedIn = true;
+            return res.status(200).send({response: 'login successful'})
         }
     })
+})
+
+router.get('/auth', (req, res) => {
+    console.log('auth', req.session.user )
+    if(!req.session.isLoggedIn){
+        return res.status(500).send({error: 'no one logged in'})
+    }else{
+        return res.status(200).send(true)
+    }
 })
 
 router.post('/user/register', (req, res) => {

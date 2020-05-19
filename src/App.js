@@ -4,17 +4,16 @@ import './App.css';
 
 import Signup from './pages/Signup'
 import Login from './pages/Login'
+// 
 
-import axios from 'axios'
 
-
-import apiCred from './config/api' 
+// import apiCred from './config/api' 
 import Profile from './pages/Profile';
 import Search from './pages/Search';
 
+import axios from 'axios'
+axios.defaults.withCredentials = true;
 
-
-console.log(apiCred.key)
 
 const App = () => {
  
@@ -22,7 +21,7 @@ const App = () => {
     <div className="App">
       <Router>
         <nav>
-          <li class="logo">READ IT</li>
+          <li className="logo">READ IT</li>
           <li><NavLink exact to= "/" >Home</NavLink></li>
           <li><NavLink to= "/signup" >Signup</NavLink></li>
           <li><NavLink exact to= "/login" >Login</NavLink></li>
@@ -36,7 +35,7 @@ const App = () => {
         <Route path="/signup"  
         component={() => <Signup/>}/>
         <Route path="/login"  
-        component={() => <Login />}/>
+        component={(props) => <Login {...props} />}/>
         <Route path="/profile"  
         component={() => <Profile />}/>
         

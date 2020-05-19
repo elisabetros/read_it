@@ -1,14 +1,28 @@
 const express = require('express')
 const app = express()
+const session = require('express-session')
 
-var cors = require('cors');
+var cors = require('cors', );
 
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
 app.use(cors({
-  credentials: true
+  credentials: true,
+  origin: 'http://localhost:3000'
   }));
+
+//   ##########################
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true,
+    cookie:  { 
+      maxAge: 1000 * 60 * 60 * 24
+     }
+  }))
+
+
 
 //   ##########################
 
