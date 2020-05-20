@@ -43,7 +43,7 @@ const Search = () => {
         <div className="searchResultContainer">
         {searchResults?
             searchResults.map(result=> {
-                return <SearchResult {...result.volumeInfo} key={result.volumeInfo.title+result.volumeInfo.id} />
+                return <SearchResult {...result} key={result.volumeInfo.title+result.volumeInfo.id} />
             })
         : null}
         </div>

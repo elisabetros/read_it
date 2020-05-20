@@ -12,8 +12,9 @@ exports.up = function(knex) {
 })
 .createTable('likedBook', (table) => {
     table.increments('id').primary()
+    table.integer('book_id').notNullable()
     table.string('title').notNullable()
-    table.string('author').notNullable()
+    table.string('author')
     table.integer('user_id').notNullable().unsigned()
     table.foreign('user_id').references('user.id')
 })  

@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const session = require('express-session')
+const privateKey = require('./config/authSession').privateKey
 
 var cors = require('cors', );
 
@@ -14,7 +15,7 @@ app.use(cors({
 
 //   ##########################
 app.use(session({
-    secret: 'secret',
+    secret: privateKey,
     resave: true,
     saveUninitialized: true,
     cookie:  { 
@@ -36,8 +37,10 @@ Model.knex(knex)
 //   ##########################
 
 const userRoute = require('./routes/users')
+const bookRoute = require('./routes/books')
 
 app.use(userRoute)
+app.use(bookRoute)
 
 //   ##########################
 app.listen(80, (err) => {

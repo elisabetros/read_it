@@ -34,7 +34,7 @@ const Login = (props) => {
             </label>
             <label>
                 <p>Password</p>
-                <input type="text" onChange={(e) => setPassword(e.target.value)}/>   
+                <input type="password" onChange={(e) => setPassword(e.target.value)}/>   
             </label>
                 
             <button  onClick={(e)=> handleSubmit(e) }>Log in</button>

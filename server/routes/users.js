@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const credentials = require("../config/emailcredentials")
 
-var privateKey = 'privateKey';
+
 
 const bcrypt = require('bcrypt')
 const saltRounds = 10;
@@ -81,6 +81,8 @@ router.post('/user/register', (req, res) => {
                 }
             })
     })
+
+    
 
 
 
