@@ -1,13 +1,17 @@
-.reviewForm{
+.review{
     display: grid;
     grid-template-columns: .5fr 1fr;
-    margin:5%;
+    /* grid-template-rows: .1fr .1fr .1fr 1fr ; */
+    grid-gap: 1em;
+    margin:5% 0;
+    padding:5%;
+    border:1px solid #333745;
 }
+.review img{
+    grid-row:1/5;
+    width:auto;
+    height:300px;
+    align-self: center;
+    justify-self: center;
 
-
-h1{
-    grid-column: 1/-1;
-}
-img{
-    width: 100%;
 }

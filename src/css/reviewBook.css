@@ -1,0 +1,13 @@
+.reviewForm{
+    display: grid;
+    grid-template-columns: .5fr 1fr;
+    margin:5%;
+}
+
+
+h1{
+    grid-column: 1/-1;
+}
+img{
+    width: 100%;
+}

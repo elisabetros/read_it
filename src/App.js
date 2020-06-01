@@ -32,7 +32,7 @@ const App = () => {
           <li><NavLink to= "/reviews">Reviews</NavLink></li>
         </nav>
       
-     
+     <main>
       <Switch>
         <Route exact path="/"
         component={() => <Search />}/>
@@ -54,6 +54,7 @@ const App = () => {
         
         
       </Switch>
+      </main>
     </Router>
     </div>
   );

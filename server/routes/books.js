@@ -57,15 +57,20 @@ router.post('/addReview', async (req, res) => {
     if(!req.session.isLoggedIn){
         return res.status(500).send({error: 'You need to be logged in to review a book'})
     }
-    const { reviewText, reviewRating, reviewTitle, bookTitle, img } = req.body
-    console.log(req.body)
-    if(!reviewText || !reviewRating || !reviewTitle || !bookTitle){
+    const { reviewText, reviewRating, reviewTitle, bookTitle, img, bookID } = req.body
+    // console.log(req.body)
+    if(!reviewText || !reviewRating || !reviewTitle || !bookTitle || !bookID){
         return res.status(500).send({error: 'missing fields'})
+    }
+    const alreadyReviewed = await BookReview.query().select().where({'book_id': bookID}).andWhere({'user_id': req.session.user.id})
+    if(alreadyReviewed[0]){
+        return res.send({error: 'Book already reviewed'})
     }
     try{
         const bookReview = await BookReview.query().insert({
             title: reviewTitle,
             book_title: bookTitle,
+            book_id: bookID,
             rating: reviewRating,
             review: reviewText,
             img,
@@ -79,6 +84,26 @@ router.post('/addReview', async (req, res) => {
             return res.status(500).send({error: 'database error, could not add review'});
          }
     }
+})
+
+router.post('/deleteReview', async (req, res) => {
+    const { id } = req.body
+    if(!req.session.isLoggedIn){
+        return res.send({error:'Log in to delete review'})
+    }
+    if(!id){
+        return res.send({error: 'ID missing'})
+    }
+    try{    
+        await BookReview.query().delete().where({id})
+        return res.status(200).send({response: 'Review deleted'})
+    }catch(err){ 
+        if(err){
+        console.log(err);
+        return res.status(500).send({error: 'Database error, could not add review'});
+     }
+    }
+
 })
 
 router.post('/updateReview', async (req, res) => {
@@ -125,12 +150,9 @@ router.get('/getBooksInLibrary', async (req, res) => {
     }
 })
 
-router.get('/getReviews', async (req, res) => {
-    if(!req.session.isLoggedIn){
-        return res.status(500).send({error: 'please login'})
-    }
+router.get('/getReviews', async (req, res) => { 
     try{
-        const bookReviews = await BookReview.query().select().where({'user_id': req.session.user.id})
+        const bookReviews = await BookReview.query().select().withGraphFetched('user')
         return res.status(200).send(bookReviews)
     }catch(err){
         if(err){

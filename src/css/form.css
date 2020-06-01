@@ -7,11 +7,11 @@ form{
 label{
     grid-template-columns: 1fr;
 }
-p, input{
+label > p, input{
     text-align: left;
     margin:0;
 }
-p{
+label > p{
     margin:5% 0 1% 10px;
 }
 input, textarea{

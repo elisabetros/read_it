@@ -17,7 +17,7 @@ nav{
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   background: #333745;
   align-items: center;
-  padding:3%;
+  padding:2%;
   margin-bottom: 3%;
   box-shadow: 0px 4px 10px rgba(0,0,0,.5);
 }
@@ -53,7 +53,7 @@ button{
 button:disabled{
   opacity: .7;
 }
-.errorWrapper{
+.errorWrapper, .notificationWrapper{
   text-align: center;
   position: absolute;
   padding:5%;
@@ -67,8 +67,14 @@ button:disabled{
   right:0;
   margin:auto;
   width: 50vw;
+}
+.errorWrapper{
   color: red;
   border:3px solid red;
+}
+.notificationWrapper{
+  color: #333745;
+  border:3px solid #333745;
 }
 .show{
   transform: translateY(0);
@@ -80,4 +86,9 @@ button:disabled{
 }
 .notAuthorized a{
   color: #333745;
+  text-decoration: underline;
+}
+
+main{
+  padding:0 5%;
 }

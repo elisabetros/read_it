@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import isAuthorized from "../auth/isAuthorized";
 import Error from '../components/Error'
 import { Link, Redirect, useParams  } from "react-router-dom";
-import reviewCss from '../css/review.css'
+import reviewBookCss from '../css/reviewBook.css'
+import Notification from '../components/Notification'
 
 import axios from 'axios'
 
@@ -13,6 +14,7 @@ const ReviewBook = (props) => {
     const [ reviewTitle, setReviewTitle ] = useState()
     const [ reviewRating, setReviewRating ] = useState()
     const [ error, setError ] = useState()
+    const [ notification, setNotification ] = useState()
 
    let { id }= useParams()
     // console.log(id)
@@ -39,15 +41,21 @@ const ReviewBook = (props) => {
         const response = await axios.post('http://localhost/addReview', {
             reviewText, 
             reviewRating,
-            book_id:id,
+            bookID:id,
             reviewTitle,
             bookTitle: book.volumeInfo.title,
             img: book.volumeInfo.imageLinks.smallThumbnail
         })
         if(response.data.error){
             setError(response.data.error)
+            setTimeout(() => {
+                setError('')
+            },3000)
         }else{
-            console.log(response.data)
+            setNotification('Review successfully posted')
+            setTimeout(() => {
+                props.history.push('/reviews')
+            },3000)
         }
     }
 
@@ -69,8 +77,12 @@ const ReviewBook = (props) => {
         
     return (
         <>
-        <div className={error? 'show errorWrapper': 'errorWraooer'}>
+        <Link to="/profile">Back to Profile</Link>
+        <div className={error? 'show errorWrapper': 'errorWrapper'}>
             <Error error={error} />
+        </div>
+        <div className={notification? 'show notificationWrapper': 'notificationWrapper'}>
+            <Notification notification={notification} />
         </div>
         <div className="reviewForm">
       

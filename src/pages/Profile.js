@@ -14,11 +14,7 @@ const Profile = (props) => {
 
     useEffect(() => {
         let isFetching = true
-        if(!props.isAuthorized){
-            setError('Log in to view your profile')     
-        }else{
-            setError('')
-        }
+      
         const fetchBooksInLibrary = async () => {
             const response = await axios('http://localhost/getBooksInLibrary')
             console.log(response.data)
@@ -50,13 +46,16 @@ const Profile = (props) => {
             console.log('TODO: fetch again')
         }
     }
-    if(error){
-        return (<div><Error message={error}/><Link to="/login"> Login</Link></div>)
+    if(!props.isAuthorized){
+        return (<div className="notAuthorized">
+            <h1>Log in to view your profile</h1>
+            <Link to="/login"> Login</Link></div>)
     }
     return(
         <div className="profile">
         <h1>Profile</h1>
         <div>
+            <button>Edit your information</button>
             <h2>Your Library</h2>
             <div className="library">
             {booksInLibrary?
@@ -72,6 +71,7 @@ const Profile = (props) => {
                 :null}
             </div>
         </div>
+
         </div>
     )
 
