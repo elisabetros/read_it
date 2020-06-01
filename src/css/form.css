@@ -14,10 +14,14 @@ p, input{
 p{
     margin:5% 0 1% 10px;
 }
-input{
+input, textarea{
     padding:10px;
     width: 100%;    
   border-radius: 10px;
   border:none;
+}
+textarea{
+    width:100%;
+    height:100px;
 }
 

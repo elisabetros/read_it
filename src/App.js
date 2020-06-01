@@ -12,6 +12,9 @@ import Profile from './pages/Profile';
 import Search from './pages/Search';
 
 import axios from 'axios'
+import ReviewBook from './pages/ReviewBook';
+import Reviews from './pages/Reviews';
+
 axios.defaults.withCredentials = true;
 
 
@@ -22,22 +25,32 @@ const App = () => {
       <Router>
         <nav>
           <li className="logo">READ IT</li>
-          <li><NavLink exact to= "/" >Home</NavLink></li>
-          <li><NavLink to= "/signup" >Signup</NavLink></li>
-          <li><NavLink exact to= "/login" >Login</NavLink></li>
-          <li><NavLink exact to= "/profile" >Profile</NavLink></li>
+          <li><NavLink exact to= "/">Home</NavLink></li>
+          <li><NavLink to= "/signup">Signup</NavLink></li>
+          <li><NavLink to= "/login">Login</NavLink></li>
+          <li><NavLink to= "/profile">Profile</NavLink></li>
+          <li><NavLink to= "/reviews">Reviews</NavLink></li>
         </nav>
       
      
       <Switch>
         <Route exact path="/"
         component={() => <Search />}/>
+
         <Route path="/signup"  
-        component={() => <Signup/>}/>
+        component={(props) => <Signup {...props}/>}/>
+
         <Route path="/login"  
         component={(props) => <Login {...props} />}/>
+
         <Route path="/profile"  
         component={() => <Profile />}/>
+
+        <Route path="/reviews"  
+        component={(props) => <Reviews {...props} />}/>
+
+        <Route path="/reviewbook/:id"
+        component={(props) => <ReviewBook {...props}  />} />
         
         
       </Switch>

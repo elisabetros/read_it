@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import signupCss from '../css/form.css'
 import Error from '../components/Error'
 import axios from "axios";
+import { AiFillPropertySafety } from "react-icons/ai";
 
-const Signup = () => {
+const Signup = (props) => {
 const [email, setEmail] = useState()
 const [firstName, setFirstName] = useState()
 const [lastName, setLastName] = useState()
@@ -41,6 +42,7 @@ const handleSubmit = async (e) => {
             repeatPassword
         })
         console.log(response)
+        props.history.push('/login')
     }
     console.log('submit')
     console.log(error)

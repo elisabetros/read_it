@@ -1,17 +1,18 @@
 const router = require('express').Router();
 const credentials = require("../config/emailcredentials")
 
-
-
 const bcrypt = require('bcrypt')
 const saltRounds = 10;
 
 const User = require("../models/User");
 
+
+// TODO: add resetpassword route
+
 router.post('/user/login', async (req, res) => {
-    console.log('login')
+    // console.log('login')
     const { email, password } = req.body;
-    console.log(email, password)
+    // console.log(email, password)
     if(!email || !password){
         return res.status(500).send({error: "missing fields"})
     }
@@ -20,7 +21,7 @@ router.post('/user/login', async (req, res) => {
     if(!user){
         return res.status(404).send({ error: 'wrong username' })
     }
-    console.log(user)
+    // console.log(user)
     bcrypt.compare(password, user.password, (error, isSame) => {
         if(error){
             return res.status(500).send({ error:'error' })
@@ -37,7 +38,7 @@ router.post('/user/login', async (req, res) => {
 })
 
 router.get('/auth', (req, res) => {
-    console.log('auth', req.session.user )
+    // console.log('auth', req.session.user )
     if(!req.session.isLoggedIn){
         return res.status(500).send({error: 'no one logged in'})
     }else{

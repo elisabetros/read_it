@@ -2,16 +2,15 @@ import React, { useState } from "react";
 import searchResultcss from '../css/searchResults.css'
 import { AiOutlineHeart } from "react-icons/ai";
 import { AiFillHeart } from "react-icons/ai";
-import Error from '../components/Error'
 import axios from "axios";
 
 const SearchResult = (props) => {
 //    const [ searchResults, setSearchResults] = useState(props)
    const [ isLiked, setLike ] = useState(false)
-    const [ error, setError ] = useState()
+    // const [ error, setError ] = useState()
     const [ notification, setNotification ] = useState()
 
-
+console.log(props)
 let authors = null;
 let publishedYear;
 let shortenedDesc;
@@ -36,26 +35,31 @@ if(props.volumeInfo.hasOwnProperty('authors')){
        if(!props.volumeInfo.hasOwnProperty('authors')){
            authors = null;
        }else{
-           authors = authors[0]
+           authors = authors.toString()
        }
         console.log(authors)
         const response = await axios.post('http://localhost/addBookToLibrary', {
             bookID: props.id, 
             title: props.volumeInfo.title,
-            author: authors
+            author: authors,
+            img: props.volumeInfo.imageLinks.thumbnail
         })
+        console.log(response.data)
         if(response.data.error){
-            setError(response.data.error)
+            props.error(response.data.error)
+            // setError()
+        }else{
+            setNotification(response.data.response)
+            setLike(true)
+
         }
-        setNotification(response.data.response)
-        setLike(true)
     }
     
 
 
     return(
         <div className="searchResult" >
-            {error ? <Error {...error} /> : null}
+           
             {props.volumeInfo.imageLinks? <img src={props.volumeInfo.imageLinks.thumbnail} /> : null}
             {!isLiked ?
             <AiOutlineHeart className="heartIcon" onClick={handleClick}/>

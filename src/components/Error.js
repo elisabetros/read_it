@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 
 const Error = (props) => {
-console.log(props)
+// console.log(props)
     return(
         <div className="error">
-            <p>{props.message}</p>
+            <h3>{props.error}</h3>
         </div>
     )
 }

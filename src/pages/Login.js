@@ -3,8 +3,8 @@ import axios from 'axios'
 import formCss from '../css/form.css'
 
 const Login = (props) => {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const [ email, setEmail ] = useState("")
+    const [ password, setPassword ] = useState("")
     const [ error, setError ] = useState('')
 
     const handleSubmit = async (e) => {
@@ -22,7 +22,7 @@ const Login = (props) => {
             props.history.push('/profile')
         }
     }
-
+// TODO: add forgot password
     return(
         <div className="loginPage">
         <form method="post">
