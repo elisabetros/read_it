@@ -48,6 +48,7 @@ h1{
     top:3%;
     fill: #ff9100;
     float: right;
+    cursor: pointer;
 }
 p>span{
     color:#ff9100;

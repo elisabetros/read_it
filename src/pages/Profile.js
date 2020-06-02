@@ -19,7 +19,7 @@ import {
 
 const useStyles = makeStyles(theme => ({
     submit: {
-     marginTop: theme.spacing.unit * 3,
+     marginTop: theme.spacing * 3,
      justifySelf: 'center',
      color:'white'
    },
@@ -115,11 +115,11 @@ const Profile = (props) => {
                  <Button type="submit"
                     fullWidth
                     variant="contained"
-                    color="secondary"
                     className={classes.delete}  
                     onClick={deleteAccount}>Delete</Button> 
                 <Button type="submit"
                     fullWidth
+                    color="secondary"
                     variant="contained"
                     className={classes.submit}  
                     onClick={()=>setDeleteModel(false)}>Cancel</Button>
@@ -142,20 +142,30 @@ const Profile = (props) => {
         }
     }
     const showEditModel = (id) => {
+        const review = reviewedBooks.find(review => review.id === id)
+        console.log(review)
         return(<div className="model">
             <div className="model-content">
             <span className="btn" onClick={() => setEditModel(false)}>X</span>
-            <FormControl margin="normal" required fullWidth>
+            <h3>Edit Your Review</h3>
+            <FormControl margin="normal"  fullWidth>
                 <InputLabel htmlFor="title">Title of Review</InputLabel>
-                <Input name="title" type="text" id="title" onChange={(e) => setNewReviewTitle(e.target.value)}/>
+                <Input name="title" type="text"
+                defaultValue={review.title} 
+                 id="title" 
+                 onChange={(e) => setNewReviewTitle(e.target.value)}/>
           </FormControl>
-            <FormControl margin="normal" required fullWidth>
+            <FormControl margin="normal"  fullWidth>
                 <InputLabel htmlFor="rating">Rating</InputLabel>
-                <Input name="rating" type="number" id="rating" onChange={(e) => setNewReviewRating(e.target.value)}/>
+                <Input name="rating" type="number" 
+                defaultValue={review.rating}
+                id="rating" 
+                onChange={(e) => setNewReviewRating(e.target.value)}/>
           </FormControl>
-            <FormControl margin="normal" required fullWidth>
-                <TextField required
+            <FormControl margin="normal"  fullWidth>
+                <TextField 
                     id="standard-textarea"
+                    defaultValue={review.review}
                     label="Review"
                     multiline
   onChange={(e) => setNewReviewText(e.target.value)}/>
@@ -167,7 +177,7 @@ const Profile = (props) => {
             variant="contained"
             color="secondary"
             className={classes.submit}
-             onClick={(e) => handleEditReview(e)}>Edit Review</Button>
+             onClick={(e) => handleEditReview(e)}>Submit Changes</Button>
             </div>
         </div>)
     }
@@ -219,11 +229,11 @@ const Profile = (props) => {
             </div>
         </div>
         <div className="userReviews">
-                <h3>Your Reviews</h3>
+                <h2>Your Reviews</h2>
                 {reviewedBooks?
                 reviewedBooks.map(review => {
                     return(
-                        <div className="review">
+                        <div className="review" key={review.id}>
                             <div className="btn" onClick={(e) => setEditModel(review.id)}><BsPencilSquare/>Edit Review</div>                    
                             <img src={review.img}/>
                         <div>

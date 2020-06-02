@@ -1,6 +1,7 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import axios from 'axios'
 import SearchResult from '../components/SearchResult'
+import isAuthorized from '../auth/isAuthorized'
 import formCss from '../css/form.css'
 import searchResultcss from '../css/searchResults.css'
 
@@ -19,19 +20,20 @@ import {
 
 const useStyles = makeStyles(theme => ({
      submit: {
-      marginTop: theme.spacing.unit * 3,
+      marginTop: theme.spacing * 3,
       justifySelf: 'center',
       color:'white'
     },
   }));
 
-const Search = () => {
+const Search = (props) => {
 
     const classes = useStyles()
 
-    const [searchString, setSearchString] = useState()
-    const [error, setError] = useState()
-    const [searchResults, setSearchResults] = useState()
+    const [ searchString, setSearchString ] = useState()
+    const [ error, setError ] = useState()
+    const [ searchResults, setSearchResults ] = useState()
+    const [ likedBooks, setLikedBooks ] = useState('')
 
     const validateForm = () => {
         if(!searchString){
@@ -53,12 +55,27 @@ const Search = () => {
         })
         setSearchResults(bookArray)
     }
-const handleError = (data) => {
-    setError(data)
-    setTimeout(()=> {
-        setError('')
-    },3000)
-}
+
+    const handleError = (data) => {
+        setError(data)
+        setTimeout(()=> {
+            setError('')
+        },3000)
+    }
+
+    useEffect(() => {
+        const fetchLikedBooks = async () => {
+            const response = await axios('http://localhost/getBooksInLibrary')
+            // console.log(response.data)
+            if(!response.data.error){
+                setLikedBooks(response.data)
+            }
+        }
+        
+       if(props.isAuthorized){
+        fetchLikedBooks()
+       } 
+    },[props.isAuthorized])
 // TODO add review book button
 // TODO if user has liked book make heart filled 
 
@@ -83,7 +100,7 @@ const handleError = (data) => {
         <div className="searchResultContainer">
         {searchResults?
             searchResults.map(result=> {
-                return <SearchResult {...result} key={result.volumeInfo.title+result.volumeInfo.id} error={handleError}/>
+                return <SearchResult {...result} key={result.volumeInfo.title+result.volumeInfo.id} error={handleError} likedBooks={likedBooks}/>
             })
         : null}
         </div>
@@ -94,6 +111,6 @@ const handleError = (data) => {
     )
 }
 
-export default Search
+export default isAuthorized(Search)
 
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import searchResultcss from '../css/searchResults.css'
 import { BsHeart } from "react-icons/bs";
 import { BsHeartFill } from "react-icons/bs";
@@ -31,6 +31,7 @@ if(props.volumeInfo.hasOwnProperty('authors')){
         })
     }
 
+    
     const handleClick = async () => {
        if(!props.volumeInfo.hasOwnProperty('authors')){
            authors = null;
@@ -54,8 +55,19 @@ if(props.volumeInfo.hasOwnProperty('authors')){
 
         }
     }
-    
+    useEffect(() => {
+        if(props.likedBooks){
+            const isSame = props.likedBooks.find(book => book.book_id === props.id)
+            if(isSame){
+                setLike(true)              
+            }else{
+                setLike(false)
+             }
+            }
 
+    }, [])
+    
+    console.log(props.likedBooks)
 
     return(
         <div className="searchResult" >
