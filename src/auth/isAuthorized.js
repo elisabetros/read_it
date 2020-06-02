@@ -7,20 +7,20 @@ const isAuthorized = ComponentToWrap => props => {
     useEffect(() => {
       let isFetching = true
       
-      const fetchOnlineUser = async () => {
-        
+      const fetchOnlineUser = async () => {        
         const response = await axios.get("http://localhost/auth")
           if(isFetching){
             setLoginStatus(response.data)
           }
         }
+
       fetchOnlineUser()
       return () => isFetching = false; //unsubscribe
 },[])
 
-return (
-  <ComponentToWrap isAuthorized={isLoggedIn} />
-);
+  return (
+    <ComponentToWrap isAuthorized={isLoggedIn} {...props}/>
+  );
 }
 
 

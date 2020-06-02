@@ -28,7 +28,7 @@ export default function Reviews() {
                         <img src={review.img}/>
                         <div>
                             <h5>{review.book_title}</h5>
-                            <p>Review By {review.user.first_name} {review.user.last_name}</p>
+                            <p>Review by {review.user.first_name} {review.user.last_name}</p>
                         </div>
                         <h3>{review.title}</h3>
                         <p>{review.review}</p>

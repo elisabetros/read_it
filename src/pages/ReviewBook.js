@@ -7,8 +7,29 @@ import Notification from '../components/Notification'
 
 import axios from 'axios'
 
+import { makeStyles } from '@material-ui/styles'
+import {
+    Button,
+    FormControl,
+    Input,
+    InputLabel,
+    TextField
+  } from '@material-ui/core';
+
+const useStyles = makeStyles(theme => ({
+     submit: {
+      marginTop: theme.spacing.unit * 3,
+      justifySelf: 'center',
+      color:'white',
+      maxHeight: '40px'
+    },
+  }));
+
 
 const ReviewBook = (props) => {
+
+    const classes = useStyles()
+
     const [ book, setBook ] = useState()
     const [ reviewText, setReviewText ] = useState()
     const [ reviewTitle, setReviewTitle ] = useState()
@@ -61,7 +82,7 @@ const ReviewBook = (props) => {
 
     if(!id){
         return (
-            <Redirect to="/profile" />
+            props.history.push('/profile')
         )
     }
 
@@ -91,19 +112,30 @@ const ReviewBook = (props) => {
             <img src={book.volumeInfo.imageLinks.smallThumbnail} alt={book.volumeInfo.title + 'cover image'}/>
         
             <form>
-            <label>
-                <p>Title of Review</p>
-                <input type="text" onChange={(e) => setReviewTitle(e.target.value)}/>
-            </label>
-            <label>
-                <p>Rating</p>
-                <input type="number" max="5" onChange={(e) => setReviewRating(e.target.value)}/>
-            </label>
-            <label>
-                <p>Review</p>
-                <textarea type="text" onChange={(e) => setReviewText(e.target.value)}/>
-            </label>
-            <button onClick={(e) => handleClick(e)}>Submit Review</button>
+            <FormControl margin="normal" required fullWidth>
+                <InputLabel htmlFor="title">Title of Review</InputLabel>
+                <Input name="title" type="text" id="title" onChange={(e) => setReviewTitle(e.target.value)}/>
+          </FormControl>
+            <FormControl margin="normal" required fullWidth>
+                <InputLabel htmlFor="rating">Rating</InputLabel>
+                <Input name="rating" type="number" id="rating" onChange={(e) => setReviewRating(e.target.value)}/>
+          </FormControl>
+            <FormControl margin="normal" required fullWidth>
+                {/* <InputLabel htmlFor="review">Review</InputLabel> */}
+                <TextField required
+          id="standard-textarea"
+          label="Review"
+          multiline
+  onChange={(e) => setReviewText(e.target.value)}/>
+          </FormControl>
+          
+            <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="secondary"
+            className={classes.submit}
+             onClick={(e) => handleClick(e)}>Submit Review</Button>
         </form>
       
         </div>

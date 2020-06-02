@@ -1,16 +1,62 @@
 import React, { useState, useEffect } from "react"
 import axios from 'axios'
+
 import isAuthorized from '../auth/isAuthorized'
 import Error from '../components/Error'
-import { Link } from "react-router-dom"
-import { AiFillHeart } from "react-icons/ai";
+import Notification from '../components/Notification'
+import { Link, useHistory } from "react-router-dom"
+import { BsHeartFill, BsPencilSquare, BsFillTrashFill } from "react-icons/bs";
 import profileCSS from '../css/profile.css'
 
-const Profile = (props) => {
-    const [ error, setError ] = useState()
-    const [ booksInLibrary, setBooks ] = useState()
+import { makeStyles } from '@material-ui/styles'
+import {
+    Button,
+    FormControl,
+    Input,
+    InputLabel,
+    TextField
+  } from '@material-ui/core';
 
+const useStyles = makeStyles(theme => ({
+    submit: {
+     marginTop: theme.spacing.unit * 3,
+     justifySelf: 'center',
+     color:'white'
+   },
+   delete: {
+       backgroundColor: 'rgb(61, 60, 60)',
+       color:'white'
+   }
+ }));
+
+const Profile = (props) => {
+    const classes = useStyles()
+
+    const [ error, setError ] = useState()
+    const [ notification, setNotification ] = useState()
+    const [ booksInLibrary, setBooks ] = useState()
+    const [ reviewedBooks, setReviewedBooks ] = useState()
+    const [ edit, setEdit ] = useState(false)
+    const [ newFirstname, setNewFirstname ] = useState()
+    const [ newLastname, setNewLastname ] = useState()
+    const [ newEmail, setNewEmail ] = useState()
+
+    const [ newReviewRating, setNewReviewRating] = useState()
+    const [ newReviewTitle, setNewReviewTitle] = useState()
+    const [ newReviewText, setNewReviewText] = useState()
+
+    const [ deleteModel, setDeleteModel ] = useState(false)
+    const [ editModel, setEditModel ] = useState(false)
+
+    let history = useHistory()
+    
     console.log(props)
+
+    const clearError = () => {
+        setTimeout(() => {
+            setError('')
+        }, 3000)
+    }
 
     useEffect(() => {
         let isFetching = true
@@ -22,56 +68,202 @@ const Profile = (props) => {
                 setBooks(response.data)
             }
         }
-   
-
-    // TODO?: add rotue to review book
-    // TODO: add route to update book review
-    // TODO: add option to update profile
-    // TODO add option to delete profile
+        const fetchReviewedBooks = async () => {
+            const response = await axios('http://localhost/getReviewedBooks')
+            console.log(response.data)
+            if(isFetching){
+                setReviewedBooks(response.data)
+            }
+        }
 
         fetchBooksInLibrary()
+        fetchReviewedBooks()
         return () => isFetching = false
     },[props.isAuthorized])
 
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        console.log('submit profile changes')
+        if(!newEmail || !newFirstname || !newLastname){
+            setError('Please fill out information you would like changed')
+            clearError()
+        }
+        if(newEmail || newFirstname || newLastname){
+            const response = await axios.post('http://localhost/user/update', {
+                newFirstname,
+                newLastname,
+                newFirstname
+            })
+        console.log(response.data)
+        if(response.data.error){
+            setError(response.data.error)
+            clearError()
+        }else{
+            setNotification(response.data.response)
+            setEdit(false)
+        }
+
+        }
+    }
+    const showDeleteModel = () => {
+        console.log('delete')
+        return(
+            <div className="model">
+                <div className="model-content">
+                <h2>Are you sure you want to delete your account?</h2>
+                <p>This action cannot be reversed</p>
+                 <Button type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="secondary"
+                    className={classes.delete}  
+                    onClick={deleteAccount}>Delete</Button> 
+                <Button type="submit"
+                    fullWidth
+                    variant="contained"
+                    className={classes.submit}  
+                    onClick={()=>setDeleteModel(false)}>Cancel</Button>
+                </div>
+            </div>
+        )
+    }
+    
+    const deleteAccount = async () => {
+       const response =  await axios.delete('http://localhost/user/deleteAccount')
+        console.log(response.data)
+        if(response.data.error){
+            setError('Could not Delete account, please try again')
+            clearError()
+        }else{
+            setNotification(response.data.response)
+            setTimeout(() => {
+                history.push('/')
+            },3000)
+        }
+    }
+    const showEditModel = (id) => {
+        return(<div className="model">
+            <div className="model-content">
+            <span className="btn" onClick={() => setEditModel(false)}>X</span>
+            <FormControl margin="normal" required fullWidth>
+                <InputLabel htmlFor="title">Title of Review</InputLabel>
+                <Input name="title" type="text" id="title" onChange={(e) => setNewReviewTitle(e.target.value)}/>
+          </FormControl>
+            <FormControl margin="normal" required fullWidth>
+                <InputLabel htmlFor="rating">Rating</InputLabel>
+                <Input name="rating" type="number" id="rating" onChange={(e) => setNewReviewRating(e.target.value)}/>
+          </FormControl>
+            <FormControl margin="normal" required fullWidth>
+                <TextField required
+                    id="standard-textarea"
+                    label="Review"
+                    multiline
+  onChange={(e) => setNewReviewText(e.target.value)}/>
+          </FormControl>
+          
+            <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="secondary"
+            className={classes.submit}
+             onClick={(e) => handleEditReview(e)}>Edit Review</Button>
+            </div>
+        </div>)
+    }
+    const handleEditReview = () => {
+        console.log('edit review')
+    }
     const handleClick = async (id) => {
         console.log('remove from library', id)
         const response = await axios.post('http://localhost/removeBookFromLibrary', {likedBookID: id})
         console.log(response.data)
         if(response.data.error){
             setError(response.data.error)
-            setTimeout(() => {
-                setError('')
-            }, 4000)
+           clearError()
         }else{
             console.log('TODO: fetch again')
         }
     }
     if(!props.isAuthorized){
-        return (<div className="notAuthorized">
+         return (<div className="notAuthorized">
             <h1>Log in to view your profile</h1>
             <Link to="/login"> Login</Link></div>)
     }
     return(
         <div className="profile">
-        <h1>Profile</h1>
-        <div>
-            <button>Edit your information</button>
+        <div className={error? 'show errorWrapper': 'errorWrapper'}>
+            <Error error={error} />
+        </div>
+        <div className={notification? 'show notificationWrapper': 'notificationWrapper'}>
+            <Notification notification={notification} />
+        </div>
+       
+        <div>            
             <h2>Your Library</h2>
             <div className="library">
             {booksInLibrary?
                 booksInLibrary.map(book => {
                     return (<div className='book' key={book.id} >
-                            <AiFillHeart className="heartIcon" onClick={()=>handleClick(book.id)}/>
+                            <BsHeartFill className="heartIcon" onClick={()=>handleClick(book.id)}/>
                             <img src={book.img}/>
                             <h3>{book.title}</h3>
                             <h4>{book.author}</h4>
                             <Link to={"/reviewbook/"+book.book_id}>Review Book</Link>
                         </div>)
                 })
-                :null}
+                :<div>
+                    <h2>There appears to be nothing in your library</h2>
+                    <Link to="L">Browse Book</Link>
+                </div>}
             </div>
         </div>
-
+        <div className="userReviews">
+                <h3>Your Reviews</h3>
+                {reviewedBooks?
+                reviewedBooks.map(review => {
+                    return(
+                        <div className="review">
+                            <div className="btn" onClick={(e) => setEditModel(review.id)}><BsPencilSquare/>Edit Review</div>                    
+                            <img src={review.img}/>
+                        <div>
+                            <h5>{review.book_title}</h5>
+                            <p>Review by {review.user.first_name} {review.user.last_name}</p>
+                        </div>
+                        <h3>{review.title}</h3>
+                        <p>{review.review}</p>
+                        </div>
+                    )
+                })
+                :null}
+                {editModel? showEditModel(editModel) :null}
+        </div>
+        
+        <button className={edit? 'shown editBtn': 'editBtn'} onClick={() => edit? setEdit(false): setEdit(true)}>Edit your information</button>
+        <form className={edit? 'showForm editForm' :'editForm'}>
+            <h3>Update your information</h3>
+             <FormControl margin="normal"  fullWidth>
+                <InputLabel htmlFor="newFirstname">Firstname</InputLabel>
+                <Input name="newFirstname" type="text" id="newFirstname"  onChange={(e) => setNewFirstname(e.target.value)}/>
+          </FormControl> 
+           <FormControl margin="normal"  fullWidth>
+                <InputLabel htmlFor="newLastname">Lastname</InputLabel>
+                <Input name="newLastname" type="text" id="newLastname"  onChange={(e) => setNewLastname(e.target.value)}/>
+          </FormControl> 
+            <FormControl margin="normal"  fullWidth>
+               <InputLabel htmlFor="newEmail">Email</InputLabel>
+                <Input name="newEmail" type="text" id="newEmail"  onChange={(e) => setNewEmail(e.target.value)}/>
+          </FormControl>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="secondary"
+            className={classes.submit}
+            onClick={(e) => handleSubmit(e)}>Submit Changes</Button> 
+         </form>
+         <div className="dltBtn btn" onClick={() => setDeleteModel(true)}><BsFillTrashFill />Delete Account</div>
+         {deleteModel? showDeleteModel(): null}
         </div>
     )
 

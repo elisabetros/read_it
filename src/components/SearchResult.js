@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import searchResultcss from '../css/searchResults.css'
-import { AiOutlineHeart } from "react-icons/ai";
-import { AiFillHeart } from "react-icons/ai";
+import { BsHeart } from "react-icons/bs";
+import { BsHeartFill } from "react-icons/bs";
 import axios from "axios";
 
 const SearchResult = (props) => {
@@ -60,10 +60,10 @@ if(props.volumeInfo.hasOwnProperty('authors')){
     return(
         <div className="searchResult" >
            
-            {props.volumeInfo.imageLinks? <img src={props.volumeInfo.imageLinks.thumbnail} /> : null}
+            {props.volumeInfo.imageLinks? <img src={props.volumeInfo.imageLinks.smallThumbnail} /> : null}
             {!isLiked ?
-            <AiOutlineHeart className="heartIcon" onClick={handleClick}/>
-            : <AiFillHeart className="heartIcon" onClick={handleClick} /> }
+            <BsHeart className="heartIcon" onClick={handleClick}/>
+            : <BsHeartFill className="heartIcon" onClick={handleClick} /> }
             <h3>{props.volumeInfo.title}</h3>
             <div className="authors">
             {authors? authors.map((author, index) => {

@@ -9,7 +9,26 @@ import Error from '../components/Error'
 
 import apiCred from '../config/api'
 
+import { makeStyles } from '@material-ui/styles'
+import {
+    Button,
+    FormControl,
+    Input,
+    InputLabel
+  } from '@material-ui/core';
+
+const useStyles = makeStyles(theme => ({
+     submit: {
+      marginTop: theme.spacing.unit * 3,
+      justifySelf: 'center',
+      color:'white'
+    },
+  }));
+
 const Search = () => {
+
+    const classes = useStyles()
+
     const [searchString, setSearchString] = useState()
     const [error, setError] = useState()
     const [searchResults, setSearchResults] = useState()
@@ -49,9 +68,17 @@ const handleError = (data) => {
         <div className={error ? 'show errorWrapper':'errorWrapper'}>
          <Error error={error} />
         </div>
-        <form>
-            <input type="text" placeholder="Search by book title" onChange={(e)=>setSearchString(e.target.value)}/>
-            <button onClick={(e)=> handleSearch(e)} disabled={validateForm()}>Search</button>
+        <form className="searchForm">
+            <FormControl margin="normal" required fullWidth>
+            <InputLabel htmlFor="search">Search by Book Title</InputLabel>
+            <Input name="search" type="text" id="search" autoComplete="search" onChange={(e) => setSearchString(e.target.value)}/>
+          </FormControl>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="secondary"
+            className={classes.submit} onClick={(e)=> handleSearch(e)} disabled={validateForm()}>Search</Button>
         </form>
         <div className="searchResultContainer">
         {searchResults?

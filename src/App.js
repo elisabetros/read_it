@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, NavLink, Switch  } from 'react-router-dom';
+import { BrowserRouter as Router, withRouter, Route, NavLink, Switch  } from 'react-router-dom';
 import './App.css';
 
 import Signup from './pages/Signup'
 import Login from './pages/Login'
-// 
-
+import Logout from './components/Logout'
+import { ThemeProvider } from '@material-ui/core/styles' 
+import theme from './components/theme'
 
 // import apiCred from './config/api' 
 import Profile from './pages/Profile';
@@ -14,25 +15,49 @@ import Search from './pages/Search';
 import axios from 'axios'
 import ReviewBook from './pages/ReviewBook';
 import Reviews from './pages/Reviews';
+import isAuthorized from './auth/isAuthorized';
 
 axios.defaults.withCredentials = true;
 
 
-const App = () => {
+const App = (props) => {
+  const [ error, setError ] = useState()
+  const [ notification, setNotification ] = useState()
+  const [ isLoggedIn, setLoggedInStatus ] = useState(false)
+
+  useEffect(() => {
+    if(props.isAuthorized){
+     setLoggedInStatus(true)
+    }
+  }, [props.isAuthorized])
+
+  const clearError = () => {
+    setTimeout(() => {
+        setError()
+    }, 3000)
+}
+  const handleAction = (newStatus) => {
+    console.log(newStatus)
+    setLoggedInStatus(newStatus)
+}
  
   return (
     <div className="App">
+      <ThemeProvider theme={theme}>
       <Router>
         <nav>
           <li className="logo">READ IT</li>
           <li><NavLink exact to= "/">Home</NavLink></li>
-          <li><NavLink to= "/signup">Signup</NavLink></li>
-          <li><NavLink to= "/login">Login</NavLink></li>
-          <li><NavLink to= "/profile">Profile</NavLink></li>
           <li><NavLink to= "/reviews">Reviews</NavLink></li>
+          <li><NavLink to= "/signup">Sign up</NavLink></li>
+          {!isLoggedIn? <li><NavLink to= "/login">Log in</NavLink></li>:null}
+          {isLoggedIn? <li><NavLink to= "/profile">Profile</NavLink></li> :null}
+          {isLoggedIn? <Logout onLogout={handleAction}/>: null}
         </nav>
       
      <main>
+       {notification? notification: null}
+       {error? error : null}
       <Switch>
         <Route exact path="/"
         component={() => <Search />}/>
@@ -41,7 +66,7 @@ const App = () => {
         component={(props) => <Signup {...props}/>}/>
 
         <Route path="/login"  
-        component={(props) => <Login {...props} />}/>
+        component={(props) => <Login {...props} onLogin={handleAction} />}/>
 
         <Route path="/profile"  
         component={() => <Profile />}/>
@@ -56,8 +81,9 @@ const App = () => {
       </Switch>
       </main>
     </Router>
+    </ThemeProvider>
     </div>
   );
 }
 
-export default App;
+export default isAuthorized(App);

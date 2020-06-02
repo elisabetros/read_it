@@ -83,8 +83,55 @@ router.post('/user/register', (req, res) => {
             })
     })
 
-    
+router.post('/user/update', async (req, res) => {
+    let { newFirstname, newLastname, newEmail } = req.body
+    if(!req.session.isLoggedIn){
+        return res.status(500).send({error:'Log in to change information'})
+    }
+    if(!newFirstname){
+        newFirstname = req.session.firstName
+    }
+    if(!newLastname){
+        newLastname = req.session.lastName
+    }
+    if(!newEmail){
+        newEmail = req.session.email
+    }
+    // if(!newFirstname || !newLastname || !newEmail){
+    //     return res.send({error: 'Missing fields'})
+    // }
+    try{
+        await User.query().findById(req.session.user.id).patch({
+            first_name: newFirstname,
+            last_name: newLastname,
+            email: newEmail
+        })
+        return res.status(200).send({response: 'Information successfully changed'})
+    }catch(error){
+        return res.status(500).send({ error: "Something went wrong with the database"});
+    }
+})    
 
+router.get('/user/logout', (req, res) => {
+    req.session.user = null;
+    req.session.isLoggedIn = false;
+    return res.status(200).send({response: 'You are logged out'})
+})
+
+router.delete('/user/deleteAccount', async (req, res) => {
+    if(!req.session.isLoggedIn){
+        return res.send({error: 'Log in to delete account'})
+    }
+    try{
+        await User.query().deleteById(req.session.user.id)
+        req.session.user = null;
+        req.session.isLoggedIn = false;
+        return res.status(200).send({resonse: 'Account deleted'})
+        
+    }catch(err){
+        return res.status(500).send({ error: "Something went wrong with the database"});
+    }
+})
 
 
 

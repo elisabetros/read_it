@@ -135,6 +135,21 @@ router.post('/updateReview', async (req, res) => {
     }
 })
 
+router.get('/getReviewedBooks', async (req, res) => {
+    if(!req.session.isLoggedIn){
+        return res.status(500).send({error:'Please Login'})
+    }
+    try{
+        const reviewedBooks = await BookReview.query().select().where({'user_id': req.session.user.id}).withGraphFetched('user')
+        return res.status(200).send(reviewedBooks)
+    }catch(err){
+        if(err){
+            console.log(err);
+            return res.status(500).send({error: 'database error'});
+        }
+    }
+})
+
 router.get('/getBooksInLibrary', async (req, res) => {
     if(!req.session.isLoggedIn){
         return res.status(500).send({error: 'please login'})
