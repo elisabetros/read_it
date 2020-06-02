@@ -3,6 +3,12 @@
     margin:0 3em 3em;
     display: grid;
 }
+.profile h2{
+ margin: 5% 0 2% 0;
+}
+.profile .review{
+    margin-top: 2%;
+}
 .profile .btn{
     justify-self: right;
 }

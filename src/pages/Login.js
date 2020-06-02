@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 // import formCss from '../css/form.css'
 import { makeStyles } from '@material-ui/styles'
@@ -12,7 +13,7 @@ import {
 
 const useStyles = makeStyles(theme => ({
      submit: {
-      marginTop: theme.spacing.unit * 3,
+      marginTop: theme.spacing * 3,
       justifySelf: 'center',
       color:'white'
     },
@@ -69,6 +70,7 @@ const Login = (props) => {
         {/* <Link to="/sendResetEmail">Forgot your Password?</Link> */}
 
         </form>
+        <Link to="/forgotpassword">Forgot Your Password?</Link>
         </div>
     )
 }

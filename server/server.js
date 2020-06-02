@@ -38,9 +38,11 @@ Model.knex(knex)
 
 const userRoute = require('./routes/users')
 const bookRoute = require('./routes/books')
+const resetPasswordRoute = require('./routes/resetPassword')
 
 app.use(userRoute)
 app.use(bookRoute)
+app.use(resetPasswordRoute)
 
 //   ##########################
 app.listen(80, (err) => {

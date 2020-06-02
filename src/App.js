@@ -16,6 +16,7 @@ import axios from 'axios'
 import ReviewBook from './pages/ReviewBook';
 import Reviews from './pages/Reviews';
 import isAuthorized from './auth/isAuthorized';
+import ForgotPassword from './pages/ForgotPassword';
 
 axios.defaults.withCredentials = true;
 
@@ -47,11 +48,11 @@ const App = (props) => {
       <Router>
         <nav>
           <li className="logo">READ IT</li>
-          <li><NavLink exact to= "/">Home</NavLink></li>
-          <li><NavLink to= "/reviews">Reviews</NavLink></li>
-          <li><NavLink to= "/signup">Sign up</NavLink></li>
-          {!isLoggedIn? <li><NavLink to= "/login">Log in</NavLink></li>:null}
-          {isLoggedIn? <li><NavLink to= "/profile">Profile</NavLink></li> :null}
+          <NavLink activeClassName="active" exact to= "/">Home</NavLink>
+          <NavLink activeClassName="active" to= "/reviews">Reviews</NavLink>
+          <NavLink activeClassName="active" to= "/signup">Sign up</NavLink>
+          {!isLoggedIn? <NavLink activeClassName="active" to= "/login">Log in</NavLink>:null}
+          {isLoggedIn? <NavLink activeClassName="active" to= "/profile">Profile</NavLink> :null}
           {isLoggedIn? <Logout onLogout={handleAction}/>: null}
         </nav>
       
@@ -76,6 +77,9 @@ const App = (props) => {
 
         <Route path="/reviewbook/:id"
         component={(props) => <ReviewBook {...props}  />} />
+        
+        <Route path="/forgotpassword"
+        component={(props) => <ForgotPassword {...props}  />} />
         
         
       </Switch>
