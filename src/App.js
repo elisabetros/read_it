@@ -48,7 +48,7 @@ const App = (props) => {
       <ThemeProvider theme={theme}>
       <Router>
         <nav>
-          <li className="logo">READ <br></br>IT</li>
+          <li className="logo">READ IT</li>
           <NavLink activeClassName="active" exact to= "/">Home</NavLink>
           <NavLink activeClassName="active" to= "/reviews">Reviews</NavLink>
           <NavLink activeClassName="active" to= "/signup">Sign up</NavLink>
