@@ -7,7 +7,7 @@ import axios from "axios";
 const SearchResult = (props) => {
 //    const [ searchResults, setSearchResults] = useState(props)
    const [ isLiked, setLike ] = useState(false)
-    // const [ error, setError ] = useState()
+    const [ error, setError ] = useState()
     const [ notification, setNotification ] = useState()
 
 console.log(props)
@@ -30,8 +30,7 @@ if(props.volumeInfo.hasOwnProperty('authors')){
             return author
         })
     }
-
-    
+   
     const handleClick = async () => {
        if(!props.volumeInfo.hasOwnProperty('authors')){
            authors = null;
@@ -39,21 +38,23 @@ if(props.volumeInfo.hasOwnProperty('authors')){
            authors = authors.toString()
        }
         console.log(authors)
-        const response = await axios.post('http://localhost/addBookToLibrary', {
-            bookID: props.id, 
-            title: props.volumeInfo.title,
-            author: authors,
-            img: props.volumeInfo.imageLinks.thumbnail
-        })
-        console.log(response.data)
-        if(response.data.error){
-            props.error(response.data.error)
-            // setError()
-        }else{
+        try{
+            const response = await axios.post('http://localhost/addBookToLibrary', {
+                bookID: props.id, 
+                title: props.volumeInfo.title,
+                author: authors,
+                img: props.volumeInfo.imageLinks.thumbnail
+            })
+            console.log(response.data)
             setNotification(response.data.response)
             setLike(true)
-
+        }catch(err){
+            if(err){
+                props.error(err.response.data.error)
+             }
         }
+       
+       
     }
     useEffect(() => {
         if(props.likedBooks){

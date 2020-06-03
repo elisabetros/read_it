@@ -8,11 +8,17 @@ const isAuthorized = ComponentToWrap => props => {
       let isFetching = true
       
       const fetchOnlineUser = async () => {        
-        const response = await axios.get("http://localhost/auth")
+        try{
+          const response = await axios.get("http://localhost/auth")
           if(isFetching){
             setLoginStatus(response.data)
           }
+        }catch(err){
+          if(err){
+            console.log(err.response.data)
+          }
         }
+      }
 
       fetchOnlineUser()
       return () => isFetching = false; //unsubscribe

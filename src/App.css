@@ -36,7 +36,11 @@ nav{
 .logo{
   color:#ff9100;
   font-size: 150%;
-  letter-spacing: 8px;
+  letter-spacing: 5px;
+  text-align: left;
+  font-weight: 500;
+  justify-self: center;
+  line-height: 25px;
 }
 li{
   list-style-type: none;
@@ -105,14 +109,16 @@ button:disabled{
   right:0;
   margin:auto;
   width: 50vw;
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12);;
 }
 .errorWrapper{
-  color: red;
-  border:3px solid red;
+   background: #f44336;
+  /* border:3px solid red; */
 }
 .notificationWrapper{
-  color: #333745;
-  border:3px solid #333745;
+  background: #333745;
 }
 .show{
   transform: translateY(0);

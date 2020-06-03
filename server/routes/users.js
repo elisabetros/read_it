@@ -19,7 +19,7 @@ router.post('/user/login', async (req, res) => {
     const users = await User.query().where({ email }).limit(1);
     const user = users[0]
     if(!user){
-        return res.status(404).send({ error: 'wrong username' })
+        return res.status(500).send({ error: 'wrong username' })
     }
     // console.log(user)
     bcrypt.compare(password, user.password, (error, isSame) => {
@@ -27,7 +27,7 @@ router.post('/user/login', async (req, res) => {
             return res.status(500).send({ error:'error' })
         }
         if(!isSame){
-            return res.status(404).send({ error: 'wrong password' })
+            return res.status(500).send({ error: 'wrong password' })
         }else{
             req.session.user = user;
             delete req.session.user.password;
@@ -40,7 +40,7 @@ router.post('/user/login', async (req, res) => {
 router.get('/auth', (req, res) => {
     // console.log('auth', req.session.user )
     if(!req.session.isLoggedIn){
-        return res.status(500).send({error: 'no one logged in'})
+        return res.status(500).send({error: 'Please Log in'})
     }else{
         return res.status(200).send(true)
     }
@@ -56,7 +56,7 @@ router.post('/user/register', (req, res) => {
             return res.status(500).send({error: "passwords too short"})
         }
         if(password !== repeatPassword){
-            return res.status(400).send({error: "passwords don't match"})
+            return res.status(500).send({error: "passwords don't match"})
         }
         //if email is not correct form
         bcrypt.hash(password, saltRounds, async (error, hashedPassword) => {
@@ -115,12 +115,12 @@ router.post('/user/update', async (req, res) => {
 router.get('/user/logout', (req, res) => {
     req.session.user = null;
     req.session.isLoggedIn = false;
-    return res.status(200).send({response: 'You are logged out'})
+    return res.status(200).send({response: 'Log out succsessful'})
 })
 
 router.delete('/user/deleteAccount', async (req, res) => {
     if(!req.session.isLoggedIn){
-        return res.send({error: 'Log in to delete account'})
+        return res.status(500).send({error: 'Log in to delete account'})
     }
     try{
         await User.query().deleteById(req.session.user.id)

@@ -45,7 +45,9 @@ const Search = (props) => {
 
     const handleSearch = async (e) => {
         e.preventDefault()
-        const response = await axios(`https://www.googleapis.com/books/v1/volumes?q=${searchString}&keys:${apiCred.key}`)
+        try{
+            const response = await axios(`https://www.googleapis.com/books/v1/volumes?q=${searchString}&keys:${apiCred.key}`,  {
+            withCredentials: false })
         console.log(response.data)
         const bookArray = response.data.items
         bookArray.map(bookInfo => {
@@ -54,6 +56,12 @@ const Search = (props) => {
             return book
         })
         setSearchResults(bookArray)
+        }catch(err){
+            if(err){
+                setError(err.response.data.error)
+             }
+        }
+        
     }
 
     const handleError = (data) => {
@@ -65,11 +73,17 @@ const Search = (props) => {
 
     useEffect(() => {
         const fetchLikedBooks = async () => {
-            const response = await axios('http://localhost/getBooksInLibrary')
+            try{
+                const response = await axios('http://localhost/getBooksInLibrary')
             // console.log(response.data)
-            if(!response.data.error){
                 setLikedBooks(response.data)
+            
+            }catch(err){
+                if(err){
+                    setError(err.response.data.error)
+                 }
             }
+            
         }
         
        if(props.isAuthorized){

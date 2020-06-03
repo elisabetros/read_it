@@ -62,18 +62,32 @@ const Profile = (props) => {
         let isFetching = true
       
         const fetchBooksInLibrary = async () => {
-            const response = await axios('http://localhost/getBooksInLibrary')
-            console.log(response.data)
-            if(isFetching){
-                setBooks(response.data)
+            try{
+                const response = await axios('http://localhost/getBooksInLibrary')
+                console.log(response.data)
+                if(isFetching){
+                    setBooks(response.data)
+                }
+            }catch(err){
+                if(err){
+                    setError(err.response.data.error)
+                 }
             }
+           
         }
         const fetchReviewedBooks = async () => {
-            const response = await axios('http://localhost/getReviewedBooks')
-            console.log(response.data)
-            if(isFetching){
-                setReviewedBooks(response.data)
+            try{
+                const response = await axios('http://localhost/getReviewedBooks')
+                console.log(response.data)
+                if(isFetching){
+                    setReviewedBooks(response.data)
+                }
+            }catch(err){
+                if(err){
+                    setError(err.response.data.error)
+                 }
             }
+           
         }
 
         fetchBooksInLibrary()
@@ -89,19 +103,23 @@ const Profile = (props) => {
             clearError()
         }
         if(newEmail || newFirstname || newLastname){
-            const response = await axios.post('http://localhost/user/update', {
-                newFirstname,
-                newLastname,
-                newFirstname
-            })
-        console.log(response.data)
-        if(response.data.error){
-            setError(response.data.error)
-            clearError()
-        }else{
+            try{
+                const response = await axios.post('http://localhost/user/update', {
+                    newFirstname,
+                    newLastname,
+                    newFirstname
+                })
+            console.log(response.data)
             setNotification(response.data.response)
             setEdit(false)
-        }
+            }catch(err){
+                if(err){
+                    setError(err.response.data.error)
+                    clearError()
+                 }
+            }
+           
+       
 
         }
     }
@@ -129,17 +147,20 @@ const Profile = (props) => {
     }
     
     const deleteAccount = async () => {
-       const response =  await axios.delete('http://localhost/user/deleteAccount')
+        try{
+            const response =  await axios.delete('http://localhost/user/deleteAccount')
         console.log(response.data)
-        if(response.data.error){
-            setError('Could not Delete account, please try again')
-            clearError()
-        }else{
-            setNotification(response.data.response)
-            setTimeout(() => {
-                history.push('/')
-            },3000)
+        setNotification(response.data.response)
+        setTimeout(() => {
+            history.push('/')
+        },3000)
+        }catch(err){
+            if(err){
+                setError(err.response.data.error)
+                clearError()
+             }
         }
+       
     }
     const showEditModel = (id) => {
         const review = reviewedBooks.find(review => review.id === id)
@@ -186,14 +207,18 @@ const Profile = (props) => {
     }
     const handleClick = async (id) => {
         console.log('remove from library', id)
-        const response = await axios.post('http://localhost/removeBookFromLibrary', {likedBookID: id})
-        console.log(response.data)
-        if(response.data.error){
-            setError(response.data.error)
-           clearError()
-        }else{
+        try{
+            const response = await axios.post('http://localhost/removeBookFromLibrary', {likedBookID: id})
+            console.log(response.data)
             console.log('TODO: fetch again')
+        }catch(err){
+            if(err){
+                setError(err.response.data.error)
+                clearError()
+             }
         }
+       
+      
     }
     if(!props.isAuthorized){
          return (<div className="notAuthorized">

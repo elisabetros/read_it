@@ -52,6 +52,8 @@ const handleSubmit = async (e) => {
         setError('Password too short')
     }
     if(!error){
+      try{
+        
         console.log(firstName)
         const response = await axios.post('http://localhost/user/register', {
             firstName,
@@ -62,6 +64,11 @@ const handleSubmit = async (e) => {
         })
         console.log(response)
         props.history.push('/login')
+      }catch(err){
+        if(err){
+          console.log(err.response.data.error);
+          setError(err.response.data.error) }
+      }
     }
     console.log('submit')
     console.log(error)

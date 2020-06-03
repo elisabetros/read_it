@@ -14,7 +14,7 @@ router.post('/addBookToLibrary', async (req, res) => {
     }
     const alreadyAddedBook = await LikedBook.query().select().where({'user_id': req.session.user.id}).andWhere({'book_id': bookID})
     if(alreadyAddedBook[0]){
-        return res.send({error: 'Book already in library'})
+        return res.status(500).send({error: 'Book already in library'})
     }
     try{
         await LikedBook.query().insert({
@@ -40,7 +40,7 @@ router.post('/removeBookFromLibrary', async (req, res) => {
     const { likedBookID } = req.body
     console.log(likedBookID)
     if(!likedBookID){
-        return res.send({error: 'no book ID'})
+        return res.status(500).send({error: 'no book ID'})
     }
     try{
         await LikedBook.query().delete().where({'id': likedBookID}).andWhere({'user_id': req.session.user.id})
@@ -48,7 +48,7 @@ router.post('/removeBookFromLibrary', async (req, res) => {
     }catch(err){
         if(err){
             console.log(err);
-            return res.send({error: 'database error, could not add review'});
+            return res.status(500).send({error: 'database error, could not add review'});
          }
         }
     })
@@ -89,10 +89,10 @@ router.post('/addReview', async (req, res) => {
 router.post('/deleteReview', async (req, res) => {
     const { id } = req.body
     if(!req.session.isLoggedIn){
-        return res.send({error:'Log in to delete review'})
+        return res.status(500).send({error:'Log in to delete review'})
     }
     if(!id){
-        return res.send({error: 'ID missing'})
+        return res.status(500).send({error: 'ID missing'})
     }
     try{    
         await BookReview.query().delete().where({id})

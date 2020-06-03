@@ -45,7 +45,7 @@ const ReviewBook = (props) => {
         let isFetching = true
         const fetchBook = async () => {
           
-            const response = await axios(`https://www.googleapis.com/books/v1/volumes/${id}`)
+            const response = await axios(`https://www.googleapis.com/books/v1/volumes/${id}`, {withCredentials:false})
             console.log(response.data)
             if(isFetching){
                 setBook(response.data)
@@ -59,7 +59,8 @@ const ReviewBook = (props) => {
     const handleClick = async (e) => {
         e.preventDefault()
         console.log('submit review')
-        const response = await axios.post('http://localhost/addReview', {
+        try{
+            await axios.post('http://localhost/addReview', {
             reviewText, 
             reviewRating,
             bookID:id,
@@ -67,17 +68,16 @@ const ReviewBook = (props) => {
             bookTitle: book.volumeInfo.title,
             img: book.volumeInfo.imageLinks.smallThumbnail
         })
-        if(response.data.error){
-            setError(response.data.error)
-            setTimeout(() => {
-                setError('')
-            },3000)
-        }else{
-            setNotification('Review successfully posted')
+        setNotification('Review successfully posted')
             setTimeout(() => {
                 props.history.push('/reviews')
             },3000)
+        }catch(err){
+            if(err){
+                setError(err.response.data.error)
+             }
         }
+        
     }
 
     if(!id){

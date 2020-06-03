@@ -16,13 +16,15 @@ const LogOut = (props) => {
     const classes = useStyles()
 
     const handleLogout = async () => {
-        const response = await axios('http://localhost/user/logout')
-            // console.log(response)
-        if(response.data.error){
-            console.log('error')
-        }else{  
+        try{
+            const response = await axios('http://localhost/user/logout')
             console.log(props)          
             props.onLogout(false)
+        }catch(err){
+            if(err){
+                console.log(err.response.data.error)
+                
+             }
         }
 
     }

@@ -8,6 +8,7 @@ exports.up = function(knex) {
     table.string('last_name')
     table.string('password').notNullable()    
     table.string('token')
+    table.string('token_exp_date')
     table.timestamp('created_at').defaultTo(knex.fn.now())
 })
 .createTable('likedBook', (table) => {

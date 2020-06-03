@@ -23,28 +23,21 @@ const ForgotPassword = (props) => {
    const [ error, setError ] = useState('')
    const [ successMessage, setSuccessMessage ] = useState('')
 
-    const handleSubmitEmail = (e) => {
+    const handleSubmitEmail = async (e) => {
         e.preventDefault()
-        axios.post('http://localhost/sendResetLink', {
-            email
-        })
-        .then(response => {
-            console.log(response.data)
-            if(response.data.error){
-                setError(response.data.error)
-            }else{
-                setError('')
-                setSuccessMessage('You will receive an email shortly')
-                setTimeout(()=> {
-                    props.history.push('/home')
-                },3000)
+        try{
+            const response = await axios.post('http://localhost/sendResetLink', { email })
+            if(response.data.response){
+                console.log('email sent')
+                props.history.push('/')
             }
-            // if(response){
-            //    return (
-            //        <h1> You will receive an email shortly</h1>
-            //    )
-            // }
-    })
+        }catch(err){
+            if(err){
+                console.log(err) 
+                setError(err.response.data.error)
+         }
+        }
+  
     }
 
 
