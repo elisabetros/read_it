@@ -17,6 +17,7 @@ import ReviewBook from './pages/ReviewBook';
 import Reviews from './pages/Reviews';
 import isAuthorized from './auth/isAuthorized';
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 axios.defaults.withCredentials = true;
 
@@ -80,6 +81,9 @@ const App = (props) => {
         
         <Route path="/forgotpassword"
         component={(props) => <ForgotPassword {...props}  />} />
+
+        <Route path="/resetpassword/:token"
+        component={(props) => <ResetPassword {...props}  />} />
         
         
       </Switch>

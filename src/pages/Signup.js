@@ -14,7 +14,7 @@ import {
 
 const useStyles = makeStyles(theme => ({
      submit: {
-      marginTop: theme.spacing.unit * 3,
+      marginTop: theme.spacing * 3,
       justifySelf: 'center',
       color:'white'
     },
@@ -76,7 +76,9 @@ const handleSubmit = async (e) => {
     return(
         <>
        { console.log(error)}
-        {error ? <Error message={error}/> : null}
+       <div className={error? 'show errorWrapper': 'errorWrapper'}>
+            <Error error={error} />
+        </div>
         <form >
         <h1>Sign up</h1>
         <FormControl margin="normal" required fullWidth>

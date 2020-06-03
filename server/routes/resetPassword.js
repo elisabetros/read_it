@@ -63,43 +63,35 @@ const transporter = nodemailer.createTransport({
 
 router.post('/resetPassword', async (req, res) => {
   const { token, newPassword, newRepeatPassword } = req.body
-  // let tokenNotExpired;
   
-    const user = await User.query().select().where({'token':token})
+  const user = await User.query().select().where({'token': token})
   if(!user[0]){
     return res.status(500).send({error: 'Invalid Token'})
   } 
   if(new Date(user[0].token_exp_date) > new Date() ){
-    // tokenNotExpired = false
-    return res.send({error: 'Token expired'})
+    return res.status(500).send({error: 'Token expired'})
   }
-    //  tokenNotExpired = true
-
-    if(!newPassword && !newRepeatPassword){
-        return res.send({error: 'missing fields'})
+  if(!newPassword && !newRepeatPassword){
+    return res.send({error: 'missing fields'})
+  }
+  if(newPassword !== newRepeatPassword){
+    return res.send({error: "passwords don't match"})
+  }
+  bcrypt.hash(newPassword, saltRounds, async (error, hashedPassword) => {
+    if(error){
+      return res.status(500).send({ error: "couldn't hash password" })
     }
-    if(newPassword !== newRepeatPassword){
-        return res.send({error: "passwords don't match"})
-    }
-    const existingUser =  await User.query().select().where({ 'id': user[0].id }).limit(1)
-    if(!existingUser[0]){
-        return res.status(500).send({ error: "no user with that information"});
-    }
-    bcrypt.hash(newPassword, saltRounds, async (error, hashedPassword) => {
-        if(error){
-            return res.status(500).send({ error: "couldn't hash password" })
-        }
-        try{
-            await User.query().update({ 
+    try{
+      await User.query().update({ 
                 password: hashedPassword,
                 token: null,
                 token_exp_date: null
             }).where({ 'id': user[0].id })
-            return res.status(200).send(true)
+      return res.status(200).send(true)
 
-        }catch(error){
-            return res.status(500).send({ error: "something went wrong with the database"});
-        }
+      }catch(error){
+        return res.status(500).send({ error: "something went wrong with the database"});
+      }
     })
 })
 
