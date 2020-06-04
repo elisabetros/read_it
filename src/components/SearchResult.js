@@ -3,6 +3,7 @@ import searchResultcss from '../css/searchResults.css'
 import { BsHeart } from "react-icons/bs";
 import { BsHeartFill } from "react-icons/bs";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const SearchResult = (props) => {
 //    const [ searchResults, setSearchResults] = useState(props)
@@ -84,7 +85,7 @@ if(props.volumeInfo.hasOwnProperty('authors')){
                 return <h4 key={author+index}> By: {author}</h4>
             }) : null }
             </div>
-            <p>{shortenedDesc}<span>...</span></p>
+            <p>{shortenedDesc} <Link to={'/bookdetail/'+ props.id}>...Read More</Link></p>
             <div>
         	<p>{props.volumeInfo.publisher}</p>
         	<p>{publishedYear}</p>

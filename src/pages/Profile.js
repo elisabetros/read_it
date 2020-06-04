@@ -77,7 +77,7 @@ const Profile = (props) => {
         }
         const fetchReviewedBooks = async () => {
             try{
-                const response = await axios('http://localhost/getReviewedBooks')
+                const response = await axios('http://localhost/getUserReviewedBooks')
                 console.log(response.data)
                 if(isFetching){
                     setReviewedBooks(response.data)

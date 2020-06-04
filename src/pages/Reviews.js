@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import reviewCSS from '../css/review.css'
+import Review from "../components/Review";
 
 export default function Reviews() {
     const [ reviews, setReviews ] = useState()
@@ -31,17 +32,8 @@ export default function Reviews() {
             <h1>Reviews</h1>
             {reviews ? 
             reviews.map(review => {
-                return(
-                    <div className="review" key={review.id}>
-                        <img src={review.img}/>
-                        <div>
-                            <h5>{review.book_title}</h5>
-                            <p>Review by {review.user.first_name} {review.user.last_name}</p>
-                        </div>
-                        <h3>{review.title}</h3>
-                        <p>{review.review}</p>
-                    </div>
-                )
+                return <Review {...review} />
+                 
             })
         : null}
         </div>

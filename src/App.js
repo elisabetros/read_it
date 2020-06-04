@@ -18,6 +18,7 @@ import Reviews from './pages/Reviews';
 import isAuthorized from './auth/isAuthorized';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import BookDetail from './pages/BookDetail';
 
 axios.defaults.withCredentials = true;
 
@@ -63,6 +64,9 @@ const App = (props) => {
       <Switch>
         <Route exact path="/"
         component={() => <Search />}/>
+       
+        <Route exact path="/bookdetail/:id"
+        component={() => <BookDetail {...props} />}/>
 
         <Route path="/signup"  
         component={(props) => <Signup {...props}/>}/>
