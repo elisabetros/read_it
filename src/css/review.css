@@ -17,3 +17,6 @@
     align-self: center;
     justify-self: center;
 }
+.rating{
+    text-align: right;
+}

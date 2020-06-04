@@ -67,8 +67,8 @@ console.log(book)
                     }) : null }
                 </div>
                 <div>
-                    <p>{book.volumeInfo.pupblishedDate}</p>
-                    <p>{book.volumeInfo.publisher}</p>
+                    <p>Published: {new Date(book.volumeInfo.publishedDate).toDateString().slice(4,15)}</p>
+                    <p>Published by: {book.volumeInfo.publisher}</p>
                 </div>
             </div>
             {book.volumeInfo.description? <div>{parse(book.volumeInfo.description)}</div>: null}
@@ -79,7 +79,7 @@ console.log(book)
             <h2>Reviews</h2>
             {reviews ? 
             reviews.map(review => {
-               return <Review {...review} />
+               return <Review {...review} key={review.id}/>
             })
         : null}
         </div>

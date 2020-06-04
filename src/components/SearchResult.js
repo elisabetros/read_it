@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import searchResultcss from '../css/searchResults.css'
-import { BsHeart } from "react-icons/bs";
-import { BsHeartFill } from "react-icons/bs";
+import { BsHeart, BsHeartFill} from "react-icons/bs";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
