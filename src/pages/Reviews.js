@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import reviewCSS from '../css/review.css'
 import Review from "../components/Review";
+import { Link } from "react-router-dom";
 
 export default function Reviews() {
     const [ reviews, setReviews ] = useState()
@@ -32,10 +33,10 @@ export default function Reviews() {
             <h1>Reviews</h1>
             {reviews ? 
             reviews.map(review => {
-                return <Review {...review} />
-                 
+                return (<div><Review {...review} /> <Link to={"bookdetail/"+review.book_id}>About {review.book_title}</Link></div> )               
             })
         : null}
+        
         </div>
     )
 }

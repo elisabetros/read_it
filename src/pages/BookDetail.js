@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory, Link} from 'react-router-dom'
 import axios from 'axios'
 import apiCred from '../config/api'
 import '../css/bookDetail.css'
@@ -10,6 +10,8 @@ const BookDetail = (props) => {
 
     let { id }= useParams()
     
+    let history = useHistory()
+
     const [ error, setError ] = useState()
     const [ book, setBook ] = useState()
     const [ reviews, setReviews ] = useState()
@@ -50,9 +52,14 @@ const BookDetail = (props) => {
 if(!book){
     return <div className="loader">Loading...</div>
 }
+const goBack = ()=> {
+    return history
+}
+console.log(history)
 console.log(book)
     return (
         <>
+        <button className="link" onClick={() => history.goBack()}>Back</button>
         <div className="bookDetail">
             <div>
                 <h1>{book.volumeInfo.title}</h1>
@@ -79,7 +86,7 @@ console.log(book)
             <h2>Reviews</h2>
             {reviews ? 
             reviews.map(review => {
-               return <Review {...review} key={review.id}/>
+               return <Review {...review} key={review.id} key={review.id}/>
             })
         : null}
         </div>

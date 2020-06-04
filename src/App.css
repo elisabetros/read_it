@@ -124,6 +124,16 @@ button:disabled{
   transform: translateY(0);
 }
 
+.link{
+  background: none;
+  color:#ff9100;
+  box-shadow: none;
+  margin:0;
+}
+.link:hover{
+  background:none;
+  text-decoration: underline;
+}
 
 .notAuthorized{
   text-align: center;
