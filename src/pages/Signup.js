@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import signupCss from '../css/form.css'
 import Error from '../components/Error'
+import Notification from '../components/Notification'
 import axios from "axios";
 
 
@@ -30,10 +31,11 @@ const [lastName, setLastName] = useState()
 const [password, setPassword] = useState()
 const [repeatPassword, setRepeatPassword] = useState()
 const [error, setError] = useState('')
+const [notification, setNotification] = useState('')
 
 // const regExp TODO: validate email
 const validateForm = () => {
-    console.log('validating')
+    // console.log('validating')
     if(!email || !firstName || !lastName || !password || !repeatPassword){
         return true
     }
@@ -63,7 +65,11 @@ const handleSubmit = async (e) => {
             repeatPassword
         })
         console.log(response)
-        props.history.push('/login')
+        setNotification('Signup succsessful')
+        setTimeout(()=> {
+          props.history.push('/login')
+
+        },2000)
       }catch(err){
         if(err){
           console.log(err.response.data.error);
@@ -78,6 +84,9 @@ const handleSubmit = async (e) => {
        { console.log(error)}
        <div className={error? 'show errorWrapper': 'errorWrapper'}>
             <Error error={error} />
+        </div>
+        <div className={notification? 'show notificationWrapper': 'notificationWrapper'}>
+            <Notification notification={notification} />
         </div>
         <form >
         <h1>Sign up</h1>

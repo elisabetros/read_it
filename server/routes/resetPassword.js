@@ -28,8 +28,11 @@ const transporter = nodemailer.createTransport({
         return res.status(500).send({response: 'no user with this email'}) // CHANGE IN PRODUCTION TO RESPONSE:OK
     }
 
-    const token = crypto.randomBytes(64).toString('base64');
- 
+    const token = crypto.randomBytes(64).toString('hex');
+    // const token = crypto.randomBytes (32, (ex, buf) =>{
+    //   token = buf.toString('hex')
+    //   return token
+    // })
     //token expires after one hour
     const expireDate = new Date();
     expireDate.setDate(expireDate.getDate() + 1/24);
@@ -62,12 +65,14 @@ const transporter = nodemailer.createTransport({
 })
 
 router.post('/resetPassword', async (req, res) => {
-  const { token, newPassword, newRepeatPassword } = req.body
   
+  const { token, newPassword, newRepeatPassword } = req.body
   const user = await User.query().select().where({'token': token})
   if(!user[0]){
     return res.status(500).send({error: 'Invalid Token'})
   } 
+  
+  console.log(token, user[0].token_exp_date)
   if(new Date(user[0].token_exp_date) > new Date() ){
     return res.status(500).send({error: 'Token expired'})
   }
@@ -87,7 +92,7 @@ router.post('/resetPassword', async (req, res) => {
                 token: null,
                 token_exp_date: null
             }).where({ 'id': user[0].id })
-      return res.status(200).send(true)
+      return res.status(200).send({response:true})
 
       }catch(error){
         return res.status(500).send({ error: "something went wrong with the database"});

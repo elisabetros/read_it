@@ -16,6 +16,7 @@
     grid-template-rows: .1fr .1fr 1fr .1fr ;
     grid-gap:1%;
     position: relative;
+    border-radius:5px;
 }
 .searchResult img{
     grid-row:1/6;
