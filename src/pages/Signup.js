@@ -59,10 +59,8 @@ const handleSubmit = async (e) => {
         })
         console.log(response)
         props.onNotification('Signup succsessful')
-        // setTimeout(()=> {
           props.history.push('/login')
-
-        // },2000)
+          
       }catch(err){
         if(err){
           console.log(err.response.data.error);

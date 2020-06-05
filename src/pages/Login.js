@@ -38,11 +38,8 @@ const Login = (props) => {
           console.log(response.data)
          props.onLogin(true)
           props.onNotification('Login successful')
-          setTimeout(() => {
             props.history.push('/profile')
-
-          }, 2000)
-
+            
         }catch(err){
           if(err){
             console.log(err.response.data.error);

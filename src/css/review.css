@@ -13,6 +13,7 @@
 .link-editBtn{
     grid-column: 1/-1;
     display: inline;
+
 }.review .btn{
     justify-self: right;
 }
@@ -24,4 +25,7 @@
 }
 .rating{
     text-align: right;
+}
+.review .pub-authors {
+    grid-template-columns: 2fr 1fr;
 }
