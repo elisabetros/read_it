@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import isAuthorized from "../auth/isAuthorized";
-import Error from '../components/Error'
-import { Link, Redirect, useParams  } from "react-router-dom";
-import reviewBookCss from '../css/reviewBook.css'
-import Notification from '../components/Notification'
+import { Link, useParams  } from "react-router-dom";
+import  '../css/reviewBook.css'
 
 import axios from 'axios'
 
@@ -34,8 +32,6 @@ const ReviewBook = (props) => {
     const [ reviewText, setReviewText ] = useState()
     const [ reviewTitle, setReviewTitle ] = useState()
     const [ reviewRating, setReviewRating ] = useState()
-    const [ error, setError ] = useState()
-    const [ notification, setNotification ] = useState()
 
    let { id }= useParams()
     // console.log(id)
@@ -54,7 +50,7 @@ const ReviewBook = (props) => {
 
         fetchBook()
         return () => isFetching = false
-    },[])
+    },[id])
 
     const handleClick = async (e) => {
         e.preventDefault()
@@ -68,13 +64,13 @@ const ReviewBook = (props) => {
             bookTitle: book.volumeInfo.title,
             img: book.volumeInfo.imageLinks.smallThumbnail
         })
-        setNotification('Review successfully posted')
+        props.onNotification('Review successfully posted')
             setTimeout(() => {
                 props.history.push('/reviews')
             },3000)
         }catch(err){
             if(err){
-                setError(err.response.data.error)
+                props.onError(err.response.data.error)
              }
         }
         
@@ -99,12 +95,7 @@ const ReviewBook = (props) => {
     return (
         <>
         <Link to="/profile">Back to Profile</Link>
-        <div className={error? 'show errorWrapper': 'errorWrapper'}>
-            <Error error={error} />
-        </div>
-        <div className={notification? 'show notificationWrapper': 'notificationWrapper'}>
-            <Notification notification={notification} />
-        </div>
+        
         <div className="reviewForm">
       
             <h1>Create Review of {book.volumeInfo.title}</h1>

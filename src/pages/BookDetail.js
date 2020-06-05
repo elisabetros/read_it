@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useHistory, Link} from 'react-router-dom'
+import { useParams, useHistory} from 'react-router-dom'
 import axios from 'axios'
-import apiCred from '../config/api'
 import '../css/bookDetail.css'
 import parse from 'html-react-parser';
 import Review from "../components/Review";
@@ -12,12 +11,11 @@ const BookDetail = (props) => {
     
     let history = useHistory()
 
-    const [ error, setError ] = useState()
+   
     const [ book, setBook ] = useState()
     const [ reviews, setReviews ] = useState()
 
-    let authors = null;
-    let publishedYear;
+    
 
     useEffect(() => {
         let isFetching = true
@@ -28,7 +26,7 @@ const BookDetail = (props) => {
                     setBook(response.data)
                 }
             }catch(err){
-                setError(err)
+                props.onError(err.response.data.error)
             }
         }
         const fetchReviews = async () => {
@@ -39,22 +37,20 @@ const BookDetail = (props) => {
                     setReviews(response.data)
                 } // && response.data.length
             }catch(err){
-                setError(err)
+                props.onError(err.response.data.error)
             }
         }
         fetchBook()
         fetchReviews()
         return () => isFetching = false
-    }, [])
+    }, [props, id])
 
 
 
 if(!book){
     return <div className="loader">Loading...</div>
 }
-const goBack = ()=> {
-    return history
-}
+
 console.log(history)
 console.log(book)
     return (
@@ -65,7 +61,7 @@ console.log(book)
                 <h1>{book.volumeInfo.title}</h1>
                 <h2>{book.volumeInfo.subtitle}</h2>
             </div>
-            <img src={book.volumeInfo.imageLinks.smallThumbnail} />
+            <img src={book.volumeInfo.imageLinks.smallThumbnail} alt="book cover"/>
             <div className="pub-authors">
                 <div>
                 {book.volumeInfo.authors? book.volumeInfo.authors.map((author, index) => {
@@ -86,7 +82,7 @@ console.log(book)
             <h2>Reviews</h2>
             {reviews ? 
             reviews.map(review => {
-               return <Review {...review} key={review.id} key={review.id}/>
+               return <Review {...review} key={review.id}/>
             })
         : null}
         </div>

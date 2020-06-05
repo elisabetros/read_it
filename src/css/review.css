@@ -10,11 +10,16 @@
     border-radius: 5px;
     width:70vw;
 }
+.link-editBtn{
+    grid-column: 1/-1;
+    display: inline;
+}.review .btn{
+    justify-self: right;
+}
 .review img{
-    grid-row:1/5;
+    grid-row:2/5;
     width:auto;
     height:300px;
-    align-self: center;
     justify-self: center;
 }
 .rating{

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 
@@ -23,38 +23,39 @@ const Login = (props) => {
     const classes = useStyles()
     const [ email, setEmail ] = useState("")
     const [ password, setPassword ] = useState("")
-    const [ error, setError ] = useState('')
 
     const handleSubmit = async (e) => {
-        setError('')
+        props.onError()
         e.preventDefault()
         if(!email || !password){
-            setError('Missing fields')
+            props.onError('Missing fields')
             return;
         }
-        if(!error){
           try{
             const response = await axios.post("http://localhost/user/login", {
               email, password
           })
           console.log(response.data)
-          props.onLogin(true)
-          props.history.push('/profile')
+         props.onLogin(true)
+          props.onNotification('Login successful')
+          setTimeout(() => {
+            props.history.push('/profile')
+
+          }, 2000)
 
         }catch(err){
           if(err){
             console.log(err.response.data.error);
-            setError(err.response.data.error)
+            props.onError(err.response.data.error)
            }
           }
         
-        }
+        
       }
 // TODO: add forgot password
     return(
         <div className="loginPage">
         <form method="post" >
-            <div className="error">{error}</div>
             <h1>Log in</h1>
             <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="email">Email Address</InputLabel>

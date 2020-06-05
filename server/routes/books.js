@@ -43,12 +43,13 @@ router.post('/removeBookFromLibrary', async (req, res) => {
         return res.status(500).send({error: 'no book ID'})
     }
     try{
-        await LikedBook.query().delete().where({'id': likedBookID}).andWhere({'user_id': req.session.user.id})
+        const deletedBook = await LikedBook.query().delete().where({'book_id': likedBookID}).andWhere({'user_id': req.session.user.id})
+        console.log(deletedBook)
         return res.status(200).send({response:'book removed from library'})
     }catch(err){
         if(err){
             console.log(err);
-            return res.status(500).send({error: 'database error, could not add review'});
+            return res.status(500).send({error: 'database error, could not remove from library'});
          }
         }
     })
@@ -110,7 +111,7 @@ router.post('/updateReview', async (req, res) => {
     if(!req.session.isLoggedIn){
         return res.status(500).send({error: 'You need to be logged in to update a review'})
     }
-    // console.log(req.session.user)
+    // console.log(req.body)
     const { reviewID, newReviewTitle, newReviewText, newReviewRating } = req.body
     if(!reviewID || !newReviewTitle || !newReviewText || !newReviewRating){
         return res.status(500).send({error: 'missing fields'})

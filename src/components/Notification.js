@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 const Notification = (props) => {
 // console.log(props)
     return(
-        <div >
+        <div>
             <h3>{props.notification}</h3>
         </div>
     )

@@ -20,7 +20,6 @@ const ForgotPassword = (props) => {
     const classes = useStyles()
 
    const [ email, setEmail ] = useState('')
-   const [ error, setError ] = useState('')
    const [ successMessage, setSuccessMessage ] = useState('')
 
     const handleSubmitEmail = async (e) => {
@@ -28,13 +27,13 @@ const ForgotPassword = (props) => {
         try{
             const response = await axios.post('http://localhost/sendResetLink', { email })
             if(response.data.response){
-                console.log('email sent')
+                props.onNotification('email sent')
                 props.history.push('/')
             }
         }catch(err){
             if(err){
                 console.log(err) 
-                setError(err.response.data.error)
+                props.onError(err.response.data.error)
          }
         }
   
@@ -44,7 +43,6 @@ const ForgotPassword = (props) => {
     return(
         
         <form>
-        <div className={error? 'error': 'successMessage'}>{error? error: successMessage}</div>
         <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="email">Email Address</InputLabel>
             <Input id="email" name="email" autoComplete="email" autoFocus onChange={(e) => setEmail(e.target.value)} />

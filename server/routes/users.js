@@ -42,7 +42,7 @@ router.get('/auth', (req, res) => {
     if(!req.session.isLoggedIn){
         return res.status(500).send({error: 'Please Log in'})
     }else{
-        return res.status(200).send(true)
+        return res.status(200).send({response: req.session.user.id})
     }
 })
 

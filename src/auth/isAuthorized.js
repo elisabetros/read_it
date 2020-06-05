@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const isAuthorized = ComponentToWrap => props => {
-    const [isLoggedIn, setLoginStatus] = useState(false);
+    const [ isLoggedIn, setLoginStatus ] = useState(false);
+    const [ userID, setUserID ] = useState()
      
     useEffect(() => {
       let isFetching = true
@@ -11,11 +12,12 @@ const isAuthorized = ComponentToWrap => props => {
         try{
           const response = await axios.get("http://localhost/auth")
           if(isFetching){
-            setLoginStatus(response.data)
+            setLoginStatus(true)
+            setUserID(response.data.response)
           }
         }catch(err){
           if(err){
-            console.log(err.response.data)
+            console.log(err.response.data.error)
           }
         }
       }
@@ -25,7 +27,7 @@ const isAuthorized = ComponentToWrap => props => {
 },[])
 
   return (
-    <ComponentToWrap isAuthorized={isLoggedIn} {...props}/>
+    <ComponentToWrap isAuthorized={isLoggedIn} userID={userID} {...props}/>
   );
 }
 

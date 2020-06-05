@@ -2,11 +2,8 @@ import React, { useState, useEffect } from "react"
 import axios from 'axios'
 import SearchResult from '../components/SearchResult'
 import isAuthorized from '../auth/isAuthorized'
-import formCss from '../css/form.css'
-import searchResultcss from '../css/searchResults.css'
-
-import Error from '../components/Error'
-
+import  '../css/form.css'
+import '../css/searchResults.css'
 
 import apiCred from '../config/api'
 
@@ -31,7 +28,6 @@ const Search = (props) => {
     const classes = useStyles()
 
     const [ searchString, setSearchString ] = useState()
-    const [ error, setError ] = useState()
     const [ searchResults, setSearchResults ] = useState()
     const [ likedBooks, setLikedBooks ] = useState('')
 
@@ -58,17 +54,17 @@ const Search = (props) => {
         setSearchResults(bookArray)
         }catch(err){
             if(err){
-                setError(err.response.data.error)
+                props.onError(err.response.data.error)
              }
         }
         
     }
 
     const handleError = (data) => {
-        setError(data)
-        setTimeout(()=> {
-            setError('')
-        },3000)
+        props.onError(data)
+    }
+    const handleNotification = (data) => {
+        props.onNotification(data)
     }
 
     useEffect(() => {
@@ -80,7 +76,7 @@ const Search = (props) => {
             
             }catch(err){
                 if(err){
-                    setError(err.response.data.error)
+                    props.onError(err.response.data.error)
                  }
             }
             
@@ -96,9 +92,6 @@ const Search = (props) => {
     return(
         <>
         <h1>Search for Books</h1>
-        <div className={error ? 'show errorWrapper':'errorWrapper'}>
-         <Error error={error} />
-        </div>
         <form className="searchForm">
             <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="search">Search by Book Title</InputLabel>
@@ -109,12 +102,12 @@ const Search = (props) => {
             fullWidth
             variant="contained"
             color="secondary"
-            className={classes.submit} onClick={(e)=> handleSearch(e)} disabled={validateForm()}>Search</Button>
+            className={classes.submit} onClick={(e)=> handleSearch(e)} >Search</Button>
         </form>
         <div className="searchResultContainer">
         {searchResults?
             searchResults.map(result=> {
-                return <SearchResult {...result} key={result.volumeInfo.title+result.volumeInfo.id} error={handleError} likedBooks={likedBooks}/>
+                return <SearchResult {...result} key={result.volumeInfo.title+result.volumeInfo.id} error={handleError} notification={handleNotification} likedBooks={likedBooks}/>
             })
         : null}
         </div>

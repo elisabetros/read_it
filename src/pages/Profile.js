@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react"
 import axios from 'axios'
 
 import isAuthorized from '../auth/isAuthorized'
-import Error from '../components/Error'
-import Notification from '../components/Notification'
+import Review from '../components/Review'
+
 import { Link, useHistory } from "react-router-dom"
-import { BsHeartFill, BsPencilSquare, BsFillTrashFill } from "react-icons/bs";
-import profileCSS from '../css/profile.css'
+import { BsHeartFill, BsPencilSquare, BsFillTrashFill, BsFillStarFill } from "react-icons/bs";
+import '../css/profile.css'
 
 import { makeStyles } from '@material-ui/styles'
 import {
@@ -32,8 +32,6 @@ const useStyles = makeStyles(theme => ({
 const Profile = (props) => {
     const classes = useStyles()
 
-    const [ error, setError ] = useState()
-    const [ notification, setNotification ] = useState()
     const [ booksInLibrary, setBooks ] = useState()
     const [ reviewedBooks, setReviewedBooks ] = useState()
     const [ edit, setEdit ] = useState(false)
@@ -41,23 +39,14 @@ const Profile = (props) => {
     const [ newLastname, setNewLastname ] = useState()
     const [ newEmail, setNewEmail ] = useState()
 
-    const [ newReviewRating, setNewReviewRating] = useState()
-    const [ newReviewTitle, setNewReviewTitle] = useState()
-    const [ newReviewText, setNewReviewText] = useState()
-
     const [ deleteModel, setDeleteModel ] = useState(false)
-    const [ editModel, setEditModel ] = useState(false)
+
 
     let history = useHistory()
     
-    console.log(props)
-
-    const clearError = () => {
-        setTimeout(() => {
-            setError('')
-        }, 3000)
-    }
-
+    
+   
+   
     useEffect(() => {
         let isFetching = true
       
@@ -70,7 +59,7 @@ const Profile = (props) => {
                 }
             }catch(err){
                 if(err){
-                    setError(err.response.data.error)
+                    props.onError(err.response.data.error)
                  }
             }
            
@@ -84,14 +73,16 @@ const Profile = (props) => {
                 }
             }catch(err){
                 if(err){
-                    setError(err.response.data.error)
+                    props.onError(err.response.data.error)
                  }
             }
            
         }
+        if(props.isAuthorized){
 
-        fetchBooksInLibrary()
-        fetchReviewedBooks()
+            fetchBooksInLibrary()
+            fetchReviewedBooks()
+        }
         return () => isFetching = false
     },[props.isAuthorized])
 
@@ -99,23 +90,21 @@ const Profile = (props) => {
         e.preventDefault()
         console.log('submit profile changes')
         if(!newEmail || !newFirstname || !newLastname){
-            setError('Please fill out information you would like changed')
-            clearError()
+            props.onError('Please fill out information you would like changed')            
         }
         if(newEmail || newFirstname || newLastname){
             try{
                 const response = await axios.post('http://localhost/user/update', {
                     newFirstname,
                     newLastname,
-                    newFirstname
+                    newEmail
                 })
             console.log(response.data)
-            setNotification(response.data.response)
+            props.onNotification(response.data.response)
             setEdit(false)
             }catch(err){
                 if(err){
-                    setError(err.response.data.error)
-                    clearError()
+                    props.onError(err.response.data.error)                    
                  }
             }
            
@@ -150,75 +139,40 @@ const Profile = (props) => {
         try{
             const response =  await axios.delete('http://localhost/user/deleteAccount')
         console.log(response.data)
-        setNotification(response.data.response)
+        props.onNotification(response.data.response)
         setTimeout(() => {
             history.push('/')
         },3000)
         }catch(err){
             if(err){
-                setError(err.response.data.error)
-                clearError()
+                props.onError(err.response.data.error)
+                
              }
         }
        
     }
-    const showEditModel = (id) => {
-        const review = reviewedBooks.find(review => review.id === id)
-        console.log(review)
-        return(<div className="model">
-            <div className="model-content">
-            <span className="btn" onClick={() => setEditModel(false)}>X</span>
-            <h3>Edit Your Review</h3>
-            <FormControl margin="normal"  fullWidth>
-                <InputLabel htmlFor="title">Title of Review</InputLabel>
-                <Input name="title" type="text"
-                defaultValue={review.title} 
-                 id="title" 
-                 onChange={(e) => setNewReviewTitle(e.target.value)}/>
-          </FormControl>
-            <FormControl margin="normal"  fullWidth>
-                <InputLabel htmlFor="rating">Rating</InputLabel>
-                <Input name="rating" type="number" 
-                defaultValue={review.rating}
-                id="rating" 
-                onChange={(e) => setNewReviewRating(e.target.value)}/>
-          </FormControl>
-            <FormControl margin="normal"  fullWidth>
-                <TextField 
-                    id="standard-textarea"
-                    defaultValue={review.review}
-                    label="Review"
-                    multiline
-  onChange={(e) => setNewReviewText(e.target.value)}/>
-          </FormControl>
-          
-            <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="secondary"
-            className={classes.submit}
-             onClick={(e) => handleEditReview(e)}>Submit Changes</Button>
-            </div>
-        </div>)
-    }
-    const handleEditReview = () => {
-        console.log('edit review')
-    }
+
+
     const handleClick = async (id) => {
         console.log('remove from library', id)
         try{
             const response = await axios.post('http://localhost/removeBookFromLibrary', {likedBookID: id})
             console.log(response.data)
-            console.log('TODO: fetch again')
+            console.log(booksInLibrary)
+            const newBooksInLibrary = booksInLibrary.filter(book=> book.book_id !== id)
+            setBooks(newBooksInLibrary)
         }catch(err){
             if(err){
-                setError(err.response.data.error)
-                clearError()
-             }
+                props.onError(err.response.data.error)
+            }
+        }       
+    }
+    const showRating = () => {
+        let ratingArray = []
+        for(let i= 0; i< parseInt(props.rating); i++){
+            ratingArray.push(<BsFillStarFill key={i}/>)
         }
-       
-      
+        return ratingArray
     }
     if(!props.isAuthorized){
          return (<div className="notAuthorized">
@@ -227,12 +181,6 @@ const Profile = (props) => {
     }
     return(
         <div className="profile">
-        <div className={error? 'show errorWrapper': 'errorWrapper'}>
-            <Error error={error} />
-        </div>
-        <div className={notification? 'show notificationWrapper': 'notificationWrapper'}>
-            <Notification notification={notification} />
-        </div>
        
         <div>            
             <h2>Your Library</h2>
@@ -240,8 +188,8 @@ const Profile = (props) => {
             {booksInLibrary?
                 booksInLibrary.map(book => {
                     return (<div className='book' key={book.id} >
-                            <BsHeartFill className="heartIcon" onClick={()=>handleClick(book.id)}/>
-                            <img src={book.img}/>
+                            <BsHeartFill className="heartIcon" onClick={()=>handleClick(book.book_id)}/>
+                            <img src={book.img} alt="Book cover"/>
                             <h3>{book.title}</h3>
                             <h4>{book.author}</h4>
                             <Link to={"/reviewbook/"+book.book_id}>Review Book</Link>
@@ -249,7 +197,7 @@ const Profile = (props) => {
                 })
                 :<div>
                     <h2>There appears to be nothing in your library</h2>
-                    <Link to="L">Browse Book</Link>
+                    <Link to="/">Browse Books</Link>
                 </div>}
             </div>
         </div>
@@ -257,21 +205,10 @@ const Profile = (props) => {
                 <h2>Your Reviews</h2>
                 {reviewedBooks?
                 reviewedBooks.map(review => {
-                    return(
-                        <div className="review" key={review.id}>
-                            <div className="btn" onClick={(e) => setEditModel(review.id)}><BsPencilSquare/>Edit Review</div>                    
-                            <img src={review.img}/>
-                        <div>
-                            <h5>{review.book_title}</h5>
-                            <p>Review by {review.user.first_name} {review.user.last_name}</p>
-                        </div>
-                        <h3>{review.title}</h3>
-                        <p>{review.review}</p>
-                        </div>
-                    )
+                    return <Review {...review} />
                 })
                 :null}
-                {editModel? showEditModel(editModel) :null}
+                
         </div>
         
         <button className={edit? 'shown editBtn': 'editBtn'} onClick={() => edit? setEdit(false): setEdit(true)}>Edit your information</button>

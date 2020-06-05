@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import searchResultcss from '../css/searchResults.css'
+import  '../css/searchResults.css'
 import { BsHeart, BsHeartFill} from "react-icons/bs";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import isAuthorized from "../auth/isAuthorized";
 
 const SearchResult = (props) => {
 //    const [ searchResults, setSearchResults] = useState(props)
    const [ isLiked, setLike ] = useState(false)
-    const [ error, setError ] = useState()
-    const [ notification, setNotification ] = useState()
 
 console.log(props)
 let authors = null;
@@ -31,7 +30,8 @@ if(props.volumeInfo.hasOwnProperty('authors')){
         })
     }
    
-    const handleClick = async () => {
+    const handleLike = async () => {
+        if(props.isAuthorized){
        if(!props.volumeInfo.hasOwnProperty('authors')){
            authors = null;
        }else{
@@ -46,16 +46,34 @@ if(props.volumeInfo.hasOwnProperty('authors')){
                 img: props.volumeInfo.imageLinks.thumbnail
             })
             console.log(response.data)
-            setNotification(response.data.response)
+            // props.notification(response.data.response)
             setLike(true)
         }catch(err){
             if(err){
-                props.error(err.response.data.error)
+                // props.error(err.response.data.error)
+                console.log(err.response.data.error)
              }
-        }
-       
-       
+        }     
+        }else{
+        props.error('Please login to add a book to your library')
+        }    
     }
+
+    const handleUnlike = async () => {
+        console.log('remove from library')
+        // if(props.isAuthorized){
+        try{
+            const response = await axios.post('http://localhost/removeBookFromLibrary', {likedBookID: props.id})
+            console.log(response.data)
+           setLike(false)
+        }catch(err){
+            if(err){
+                // props.error(err.response.data.error)
+            }
+        }    
+    // }  
+    }
+
     useEffect(() => {
         if(props.likedBooks){
             const isSame = props.likedBooks.find(book => book.book_id === props.id)
@@ -66,17 +84,17 @@ if(props.volumeInfo.hasOwnProperty('authors')){
              }
             }
 
-    }, [])
+    }, [props])
     
     console.log(props.likedBooks)
 
     return(
         <div className="searchResult" >
            
-            {props.volumeInfo.imageLinks? <img src={props.volumeInfo.imageLinks.smallThumbnail} /> : null}
+            {props.volumeInfo.imageLinks? <img src={props.volumeInfo.imageLinks.smallThumbnail} alt="book cover" /> : null}
             {!isLiked ?
-            <BsHeart className="heartIcon" onClick={handleClick}/>
-            : <BsHeartFill className="heartIcon" onClick={handleClick} /> }
+            <BsHeart className="heartIcon" onClick={handleLike}/>
+            : <BsHeartFill className="heartIcon" onClick={handleUnlike} /> }
             <h3>{props.volumeInfo.title}</h3>
             <div className="authors">
             {authors? authors.map((author, index) => {
@@ -98,4 +116,4 @@ if(props.volumeInfo.hasOwnProperty('authors')){
         
     
 }
-export default SearchResult
+export default isAuthorized(SearchResult)

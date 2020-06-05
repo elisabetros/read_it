@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import { Redirect } from 'react-router-dom'
 import axios from 'axios'
-import Error from '../components/Error'
-import Notification from '../components/Notification'
 
 import { makeStyles } from '@material-ui/styles'
 import {
@@ -25,26 +22,18 @@ const ResetPassword = ( props) => {
 
     const [ newPassword, setNewPassword ] = useState()
     const [ newRepeatPassword, setRepeatPassword ] = useState()
-    const [ error, setError ] = useState()
-    const [ notification, setNotification ] = useState()
 
-    const clearError = () => {
-        setTimeout(() => {
-            setError('')
-        }, 3000)
-    }
+  
     // console.log()
     const handleSubmit = async (e) => {
         console.log("click")
         e.preventDefault()
         if(!newPassword || !newRepeatPassword){
-            setError('Missing fields')
-            clearError()
+            props.onError('Missing fields')
             return
         }
         if(newPassword !== newRepeatPassword){
-            setError('Passwords dont match')
-            clearError()
+            props.onError('Passwords dont match')
             return
         }
         try{ 
@@ -56,14 +45,10 @@ const ResetPassword = ( props) => {
         })
         console.log(response.data)
         if(response.data.response){
-            setNotification('Password changed')
-            setTimeout(() =>{
-
-                props.history.push('/login')
-            }, 2000)
+            props.onNotification(response.data.response)
         }
         }catch(err){
-           setError(err.response.data.error)
+            props.onError(err.response.data.error)
         }
        
         
@@ -71,12 +56,6 @@ const ResetPassword = ( props) => {
 
     return(
         <>
-       <div className={error? 'show errorWrapper': 'errorWrapper'}>
-            <Error error={error} />
-        </div>
-        <div className={notification? 'show notificationWrapper': 'notificationWrapper'}>
-            <Notification notification={notification} />
-        </div>
         <form>
             <FormControl margin="normal" required fullWidth>
                 <InputLabel htmlFor="newPassword">New Password</InputLabel>

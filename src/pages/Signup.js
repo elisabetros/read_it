@@ -30,30 +30,23 @@ const [firstName, setFirstName] = useState()
 const [lastName, setLastName] = useState()
 const [password, setPassword] = useState()
 const [repeatPassword, setRepeatPassword] = useState()
-const [error, setError] = useState('')
-const [notification, setNotification] = useState('')
 
 // const regExp TODO: validate email
-const validateForm = () => {
-    // console.log('validating')
-    if(!email || !firstName || !lastName || !password || !repeatPassword){
-        return true
-    }
-    return false
-}
+
 
 const handleSubmit = async (e) => {
-    setError(null)
+    props.onError(null)
     e.preventDefault()  
     if(password !== repeatPassword){
         console.log('errors')
-        setError("Passwords don't match")
+        props.onError("Passwords don't match")
+        return
     }
     if(password < 8){
         console.log('error')
-        setError('Password too short')
+        props.onError('Password too short')
+        return
     }
-    if(!error){
       try{
         
         console.log(firstName)
@@ -65,29 +58,21 @@ const handleSubmit = async (e) => {
             repeatPassword
         })
         console.log(response)
-        setNotification('Signup succsessful')
-        setTimeout(()=> {
+        props.onNotification('Signup succsessful')
+        // setTimeout(()=> {
           props.history.push('/login')
 
-        },2000)
+        // },2000)
       }catch(err){
         if(err){
           console.log(err.response.data.error);
-          setError(err.response.data.error) }
+          props.onError(err.response.data.error) }
       }
-    }
+    
     console.log('submit')
-    console.log(error)
 }
     return(
         <>
-       { console.log(error)}
-       <div className={error? 'show errorWrapper': 'errorWrapper'}>
-            <Error error={error} />
-        </div>
-        <div className={notification? 'show notificationWrapper': 'notificationWrapper'}>
-            <Notification notification={notification} />
-        </div>
         <form >
         <h1>Sign up</h1>
         <FormControl margin="normal" required fullWidth>
@@ -110,16 +95,13 @@ const handleSubmit = async (e) => {
             <InputLabel htmlFor="repeatPassword">Repeat Password</InputLabel>
             <Input name="repeatPassword" type="password" id="repeatPassword" autoComplete="repeatPassword" onChange={(e) => setRepeatPassword(e.target.value)}/>
           </FormControl>
-            {/* <label><p> Last Name</p><input type="text" name="LastName" onChange={(e)=>setLastName(e.target.value)}/> </label>
-            <label><p> Password</p><input type="password" name="password" onChange={(e)=>setPassword(e.target.value)}/> </label>
-            <label><p> Repeat Password</p><input type="password" name="repeatPassword" onChange={(e)=>setRepeatPassword(e.target.value)}/> </label> */}
             <Button
             type="submit"
             fullWidth
             variant="contained"
             color="secondary"
             className={classes.submit}
-            onClick={(e)=> handleSubmit(e)}
+            onClick={(e) => handleSubmit(e)}
             >Sign Up</Button>
         </form>
         </>
