@@ -71,7 +71,7 @@ console.log(book)
                 </div>
                 <div>
                     <p>Published: {new Date(book.volumeInfo.publishedDate).toDateString().slice(4,15)}</p>
-                    <p>Published by: {book.volumeInfo.publisher}</p>
+                    <p>Published by: <strong>{book.volumeInfo.publisher}</strong></p>
                 </div>
             </div>
             {book.volumeInfo.description? <div>{parse(book.volumeInfo.description)}</div>: null}

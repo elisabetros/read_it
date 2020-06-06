@@ -93,7 +93,7 @@ const Search = (props) => {
         <>
         <h1>Search for Books</h1>
         <form className="searchForm">
-            <FormControl margin="normal" required fullWidth>
+            <FormControl margin="normal"  fullWidth>
             <InputLabel htmlFor="search">Search by Book Title</InputLabel>
             <Input name="search" type="text" id="search" autoComplete="search" onChange={(e) => setSearchString(e.target.value)}/>
           </FormControl>

@@ -45,7 +45,8 @@ const ResetPassword = ( props) => {
         })
         console.log(response.data)
         if(response.data.response){
-            props.onNotification(response.data.response)
+            const str = response.data.response.stoUpperCase()
+            props.onNotification(str)
         }
         }catch(err){
             props.onError(err.response.data.error)

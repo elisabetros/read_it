@@ -22,13 +22,19 @@ router.post('/user/login', async (req, res) => {
         return res.status(500).send({ error: 'wrong username' })
     }
     // console.log(user)
-    bcrypt.compare(password, user.password, (error, isSame) => {
+    bcrypt.compare(password, user.password, async (error, isSame) => {
         if(error){
             return res.status(500).send({ error:'error' })
         }
         if(!isSame){
             return res.status(500).send({ error: 'wrong password' })
         }else{
+            if(user.token){
+                  await User.query().update({
+                    token: null,
+                    token_exp_date: null
+                }).where({ 'id': user.id })
+            }
             req.session.user = user;
             delete req.session.user.password;
             req.session.isLoggedIn = true;

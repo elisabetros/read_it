@@ -27,7 +27,9 @@ const transporter = nodemailer.createTransport({
     if(!user[0]){
         return res.status(500).send({response: 'no user with this email'}) // CHANGE IN PRODUCTION TO RESPONSE:OK
     }
-
+    if(user[0].token || new Date(user[0].token_exp_date) > new Date()){
+        return res.status(500).send({error:'User already requested email'})
+    }
     const token = crypto.randomBytes(64).toString('hex');
     // const token = crypto.randomBytes (32, (ex, buf) =>{
     //   token = buf.toString('hex')

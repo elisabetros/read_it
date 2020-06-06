@@ -29,3 +29,11 @@
 .review .pub-authors {
     grid-template-columns: 2fr 1fr;
 }
+
+.reviewsWrapper .clearBtn{
+    float: none;
+    grid-template-columns: 1fr;
+    /* text-align: center; */
+   
+    margin:0 19vw;
+}
