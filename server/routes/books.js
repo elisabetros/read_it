@@ -91,6 +91,7 @@ router.post('/addReview', async (req, res) => {
 
 router.post('/deleteReview', async (req, res) => {
     const { id } = req.body
+    console.log(req.body)
     if(!req.session.isLoggedIn){
         return res.status(500).send({error:'Log in to delete review'})
     }

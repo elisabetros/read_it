@@ -11,7 +11,9 @@ XX add ratings to books
 
 XX make notification and error global
 
-Add a search in reviews
+XX Add a search in reviews
 
 Add loader
+
+Fix forms, on submit don't reload or save filled in data
 

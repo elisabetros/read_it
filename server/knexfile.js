@@ -7,6 +7,7 @@ module.exports = {
   development: {
     client: 'mysql',
     connection: {
+      host: credentials.host,
       database: credentials.database,
       user:     credentials.user,
       password: credentials.password
@@ -14,4 +15,4 @@ module.exports = {
   },
   ...knexSnakeCaseMapper()
 };
-console.log(module.exports.development.connection.database)
+// console.log(module.exports.development.connection.database)

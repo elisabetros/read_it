@@ -10,7 +10,7 @@ app.use(express.json())
 
 app.use(cors({
   credentials: true,
-  origin: 'http://localhost:3000'
+  origin: 'https://www.valsdottir.net' //add domain name
   }));
 
 //   ##########################
@@ -45,7 +45,9 @@ app.use(bookRoute)
 app.use(resetPasswordRoute)
 
 //   ##########################
-app.listen(80, (err) => {
+const port = process.env.PORT || 80
+
+app.listen(port, (err) => {
     if(err){console.log("server couldn't connect");return;}
-    console.log('server running on port 80')
+    console.log('server running on port', port)
 })

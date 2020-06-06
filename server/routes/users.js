@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const credentials = require("../config/emailcredentials")
 
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const saltRounds = 10;
 
 const User = require("../models/User");
