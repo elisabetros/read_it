@@ -3,6 +3,7 @@ import axios from 'axios'
 
 import isAuthorized from '../auth/isAuthorized'
 import Review from '../components/Review'
+import useForm from '../customHooks/useForm'
 
 import { Link, useHistory } from "react-router-dom"
 import { BsHeartFill, BsFillTrashFill, BsFillStarFill } from "react-icons/bs";
@@ -17,6 +18,7 @@ import {
   } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
+
     submit: {
      marginTop: theme.spacing * 3,
      justifySelf: 'center',
@@ -29,22 +31,45 @@ const useStyles = makeStyles(theme => ({
  }));
 
 const Profile = (props) => {
-    const classes = useStyles()
-
+    
     const [ booksInLibrary, setBooks ] = useState()
     const [ reviewedBooks, setReviewedBooks ] = useState()
     const [ edit, setEdit ] = useState(false)
-    const [ newFirstname, setNewFirstname ] = useState()
-    const [ newLastname, setNewLastname ] = useState()
-    const [ newEmail, setNewEmail ] = useState()
-
     const [ deleteModel, setDeleteModel ] = useState(false)
-
-
+    
+    
     let history = useHistory()
+    const classes = useStyles()
+    const { values, errors, handleChange, handleSubmit } = useForm(updateUser, validate);
     
     
-   
+    function validate() {
+        let errors = {};
+        if(Object.keys(values).length === 0){
+            // console.log('values empty')
+          errors.newEmail = 'Please update at least one field';
+          errors.newFirstname = 'Please update at least one field';
+          errors.newLastname = 'Please update at least one field';
+        } 
+        return errors;
+      }
+
+      async function updateUser() {
+        try{
+            const response = await axios.post('https://read-it-react.herokuapp.com/user/update', {
+                newFirstname: values.newFirstname,
+                newLastname: values.newLastname,
+                newEmail: values.newEmail
+            })
+        console.log(response.data)
+        props.onNotification(response.data.response)
+        setEdit(false)
+        }catch(err){
+            if(err){
+                props.onError(err.response.data.error)                    
+             }
+        }
+      }
    
     useEffect(() => {
         let isFetching = true
@@ -85,31 +110,18 @@ const Profile = (props) => {
         return () => isFetching = false
     },[props.isAuthorized])
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        console.log('submit profile changes')
-        if(newEmail || newFirstname || newLastname){
-            try{
-                const response = await axios.post('https://read-it-react.herokuapp.com/user/update', {
-                    newFirstname,
-                    newLastname,
-                    newEmail
-                })
-            console.log(response.data)
-            props.onNotification(response.data.response)
-            setEdit(false)
-            }catch(err){
-                if(err){
-                    props.onError(err.response.data.error)                    
-                 }
-            }
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault()
+    //     console.log('submit profile changes')
+    //     if(newEmail || newFirstname || newLastname){
+           
            
        
 
-        }else{
-            props.onError('Please fill out information you would like changed') 
-        }
-    }
+    //     }else{
+    //         props.onError('Please fill out information you would like changed') 
+    //     }
+    // }
     const showDeleteModel = () => {
         console.log('delete')
         return(
@@ -220,17 +232,26 @@ const Profile = (props) => {
         <button className={edit? 'shown editBtn': 'editBtn'} onClick={() => edit? setEdit(false): setEdit(true)}>Edit your information</button>
         <form className={edit? 'showForm editForm' :'editForm'}>
             <h3>Update your information</h3>
-             <FormControl margin="normal"  fullWidth>
+             <FormControl margin="normal" fullWidth>
                 <InputLabel htmlFor="newFirstname">Firstname</InputLabel>
-                <Input name="newFirstname" type="text" id="newFirstname"  onChange={(e) => setNewFirstname(e.target.value)}/>
+                <Input name="newFirstname" type="text" id="newFirstname"  onChange={handleChange}/>
+                {errors.newFirstname && (
+                    <p className="help is-danger">{errors.newFirstname}</p>
+                  )}
           </FormControl> 
-           <FormControl margin="normal"  fullWidth>
+           <FormControl margin="normal" fullWidth>
                 <InputLabel htmlFor="newLastname">Lastname</InputLabel>
-                <Input name="newLastname" type="text" id="newLastname"  onChange={(e) => setNewLastname(e.target.value)}/>
+                <Input name="newLastname" type="text" id="newLastname"  onChange={handleChange}/>
+                {errors.newLastname && (
+                    <p className="help is-danger">{errors.newLastname}</p>
+                  )}
           </FormControl> 
-            <FormControl margin="normal"  fullWidth>
+            <FormControl margin="normal" fullWidth>
                <InputLabel htmlFor="newEmail">Email</InputLabel>
-                <Input name="newEmail" type="text" id="newEmail"  onChange={(e) => setNewEmail(e.target.value)}/>
+                <Input name="newEmail" type="text" id="newEmail"  onChange={handleChange}/>
+                {errors.newEmail && (
+                    <p className="help is-danger">{errors.newEmail}</p>
+                  )}
           </FormControl>
           <Button
             type="submit"
@@ -238,7 +259,7 @@ const Profile = (props) => {
             variant="contained"
             color="secondary"
             className={classes.submit}
-            onClick={(e) => handleSubmit(e)}>Submit Changes</Button> 
+            onClick={handleSubmit}>Submit Changes</Button> 
          </form>
          <div className="dltBtn btn" onClick={() => setDeleteModel(true)}><BsFillTrashFill />Delete Account</div>
          {deleteModel? showDeleteModel(): null}

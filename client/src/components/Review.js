@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BsFillStarFill, BsPencilSquare, BsFillTrashFill } from 'react-icons/bs'
 import { Link } from "react-router-dom";
 import isAuthorized from "../auth/isAuthorized";
+import useForm from '../customHooks/useForm'
 
 import axios from 'axios';
 
@@ -28,13 +29,14 @@ const useStyles = makeStyles(theme => ({
 
 const Review = (props) => {
 
-    const classes = useStyles()
-
+    
     const [ newReviewRating, setNewReviewRating] = useState(props.rating)
     const [ newReviewTitle, setNewReviewTitle] = useState(props.title)
     const [ newReviewText, setNewReviewText] = useState(props.review)    
     const [ editModel, setEditModel ] = useState(false)
     const [ deleteModel, setDeleteModel ] = useState(false)
+    
+    const classes = useStyles()
 
     const showDeleteModel = () => {
         console.log('delete')
@@ -133,7 +135,7 @@ const Review = (props) => {
         }
     }
 
-    console.log(props)
+    // console.log(props)
     const showRating = () => {
         let ratingArray = []
         for(let i= 0; i< parseInt(props.rating); i++){

@@ -43,13 +43,12 @@ const ReviewBook = (props) => {
         }
         if(!values.rating){
           errors.rating = 'Please rate the book on the scale 0 to 5'
-        }
-        
+        }       
         return errors;
       }
     
     async function reviewBook() {
-        console.log(values)
+        // console.log(values)
         try{
             await axios.post('https://read-it-react.herokuapp.com/addReview', {
             reviewText: values.review, 
