@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import axios from 'axios'
 import SearchResult from '../components/SearchResult'
 import isAuthorized from '../auth/isAuthorized'
+import Loader from '../components/Loader'
 import  '../css/form.css'
 import '../css/searchResults.css'
 
@@ -30,6 +31,7 @@ const Search = (props) => {
     const [ searchString, setSearchString ] = useState()
     const [ searchResults, setSearchResults ] = useState()
     const [ likedBooks, setLikedBooks ] = useState('')
+    const [ loading, setLoading ] = useState(false)
 
     const validateForm = () => {
         if(!searchString){
@@ -41,6 +43,7 @@ const Search = (props) => {
 
     const handleSearch = async (e) => {
         e.preventDefault()
+        setLoading(true)
         try{
             const response = await axios(`https://www.googleapis.com/books/v1/volumes?q=${searchString}&keys:${apiCred.key}`,  {
             withCredentials: false })
@@ -52,6 +55,7 @@ const Search = (props) => {
             return book
         })
         setSearchResults(bookArray)
+        setLoading(false)
         }catch(err){
             if(err){
                 props.onError(err.response.data.error)
@@ -105,6 +109,7 @@ const Search = (props) => {
             className={classes.submit} onClick={(e)=> handleSearch(e)} >Search</Button>
         </form>
         <div className="searchResultContainer">
+        {loading? <Loader />: null}
         {searchResults?
             searchResults.map(result=> {
                 return <SearchResult {...result} key={result.volumeInfo.title+result.volumeInfo.id} disabled={validateForm} error={handleError} notification={handleNotification} likedBooks={likedBooks}/>

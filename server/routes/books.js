@@ -58,19 +58,23 @@ router.post('/addReview', async (req, res) => {
     if(!req.session.isLoggedIn){
         return res.status(500).send({error: 'You need to be logged in to review a book'})
     }
-    const { reviewText, reviewRating, reviewTitle, bookTitle, img, bookID } = req.body
+    const { reviewText, reviewRating, reviewTitle, bookTitle, img, bookID, author } = req.body
     // console.log(req.body)
-    if(!reviewText || !reviewRating || !reviewTitle || !bookTitle || !bookID){
+    if(!reviewText || !reviewRating || !reviewTitle || !bookTitle || !bookID || !author){
         return res.status(500).send({error: 'missing fields'})
+    }
+    if(reviewRating > 5){
+        return res.status(500).send({error: 'rating has to be between 0 and 5'})
     }
     const alreadyReviewed = await BookReview.query().select().where({'book_id': bookID}).andWhere({'user_id': req.session.user.id})
     if(alreadyReviewed[0]){
-        return res.send({error: 'Book already reviewed'})
+        return res.status(500).send({error: 'Book already reviewed'})
     }
     try{
         const bookReview = await BookReview.query().insert({
             title: reviewTitle,
             book_title: bookTitle,
+            author,
             book_id: bookID,
             rating: reviewRating,
             review: reviewText,

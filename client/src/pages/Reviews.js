@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import '../css/review.css'
 import Review from "../components/Review";
+import Loader from '../components/Loader'
 
 import { makeStyles } from '@material-ui/styles'
 import {
@@ -26,7 +27,7 @@ export default function Reviews(props) {
     const [ reviews, setReviews ] = useState()
     const [ searchStr, setSearchStr ] = useState()
     const [ clearSearch, setClearSearch ] = useState(false)
-
+    const [ loading, setLoading ] = useState(true)
     useEffect(() => {
         let isFetching = true
         const fetchReviews = async () => {
@@ -35,6 +36,7 @@ export default function Reviews(props) {
                 console.log(response.data)
                 if(isFetching){
                     setReviews(response.data)
+                    setLoading(false)
                 }
             }catch(err){
                 if(err){
@@ -45,7 +47,7 @@ export default function Reviews(props) {
         } 
         fetchReviews()
         return () => isFetching= false
-    },[props, clearSearch])
+    },[clearSearch])
 
     const handleDeleteReview = async (id) => {
         try{
@@ -54,7 +56,6 @@ export default function Reviews(props) {
         props.onNotification(response.data.response)
         const newReviewedBooks = reviews.filter(review => review.id !== id)
         setReviews(newReviewedBooks)
-            
         }catch(err){
             if(err){
                 props.onError(err.response.data.error)                
@@ -87,6 +88,8 @@ export default function Reviews(props) {
     }
 
     return(
+        <>
+        {loading? <Loader />: null}
         <div className="reviewsWrapper">
             <h1>Reviews</h1>
                 {searchStr? <div className="clearBtn btn" onClick={() => setClearSearch(true)}>Clear Search</div>:null}
@@ -111,5 +114,6 @@ export default function Reviews(props) {
         : null}
         
         </div>
+        </>
     )
 }

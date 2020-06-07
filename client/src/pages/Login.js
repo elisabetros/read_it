@@ -22,18 +22,21 @@ const useStyles = makeStyles(theme => ({
   }));
 
 const Login = (props) => {
-    const classes = useStyles()
-    
+  const [ loading, setLoading ] = useState(false)
+
+    const classes = useStyles()    
     const { values, errors, handleChange, handleSubmit } = useForm(login, validate);
 
     async function login() {
-      console.log(values)
+      // console.log(values)
+      setLoading(true)
       try{
         const response = await axios.post("https://read-it-react.herokuapp.com/user/login", {
           email:values.email, password:values.password
               })
          console.log(response.data)
         props.onLogin(true)
+        setLoading(false)
         props.onNotification('Login successful')
         props.history.push('/read_it/profile')
       }catch(err){
@@ -83,7 +86,7 @@ const Login = (props) => {
             color="secondary"
             className={classes.submit}
             onClick={(e)=> handleSubmit(e)}
-            >Log in
+            >{!loading? 'Log in': '...Loading'}
           </Button>
         </form>
         <Link to="/read_it/forgotpassword">Forgot Your Password?</Link>

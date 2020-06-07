@@ -38,7 +38,9 @@
 .searchResult>div p:first-child{
     font-weight: bold;
 }
-
+.searchResultContainer .loader{
+    top:35%;
+}
 h1{
     margin:3%;
 }

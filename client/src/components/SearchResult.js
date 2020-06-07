@@ -102,7 +102,7 @@ if(props.volumeInfo.hasOwnProperty('authors')){
                 return <h4 key={author+index}> By: {author}</h4>
             }) : null }
             </div>
-            <p>{shortenedDesc} <Link to={'/bookdetail/'+ props.id}>...Read More</Link></p>
+            <p>{shortenedDesc} <Link to={'/read_it/bookdetail/'+ props.id}>...Read More</Link></p>
             <div>
         	<p>{props.volumeInfo.publisher}</p>
         	<p>{publishedYear}</p>

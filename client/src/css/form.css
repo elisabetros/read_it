@@ -28,3 +28,7 @@ textarea{
     color:#f44336;
     font-size: 80%;
 }
+.big.is-danger{
+    margin:1% 0;
+    font-size: 100%;
+}

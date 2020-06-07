@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Route, NavLink, Switch  } from 'react-router-dom';
 import './App.css';
 
@@ -12,15 +12,15 @@ import axios from 'axios';
 import theme from './components/theme';
 import Profile from './pages/Profile';
 import Search from './pages/Search';
-
 import ReviewBook from './pages/ReviewBook';
 import Reviews from './pages/Reviews';
 import isAuthorized from './auth/isAuthorized';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import BookDetail from './pages/BookDetail';
-import Error from './components/Error';
-import Notification from './components/Notification';
+
+import Notification from './components/Notification1';
+// import Error from './components/Error';
 
 axios.defaults.withCredentials = true;
 

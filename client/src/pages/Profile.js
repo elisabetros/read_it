@@ -16,6 +16,7 @@ import {
     Input,
     InputLabel
   } from '@material-ui/core';
+import Loader from "../components/Loader"
 
 const useStyles = makeStyles(theme => ({
 
@@ -36,6 +37,7 @@ const Profile = (props) => {
     const [ reviewedBooks, setReviewedBooks ] = useState()
     const [ edit, setEdit ] = useState(false)
     const [ deleteModel, setDeleteModel ] = useState(false)
+    const [ loading, setLoading ] = useState(false)
     
     
     let history = useHistory()
@@ -55,6 +57,7 @@ const Profile = (props) => {
       }
 
       async function updateUser() {
+          setLoading(true)
         try{
             const response = await axios.post('https://read-it-react.herokuapp.com/user/update', {
                 newFirstname: values.newFirstname,
@@ -63,6 +66,7 @@ const Profile = (props) => {
             })
         console.log(response.data)
         props.onNotification(response.data.response)
+        setLoading(false)
         setEdit(false)
         }catch(err){
             if(err){
@@ -103,25 +107,14 @@ const Profile = (props) => {
            
         }
         if(props.isAuthorized){
-
             fetchBooksInLibrary()
             fetchReviewedBooks()
         }
+       
         return () => isFetching = false
     },[props.isAuthorized])
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault()
-    //     console.log('submit profile changes')
-    //     if(newEmail || newFirstname || newLastname){
-           
-           
-       
-
-    //     }else{
-    //         props.onError('Please fill out information you would like changed') 
-    //     }
-    // }
+  
     const showDeleteModel = () => {
         console.log('delete')
         return(
@@ -133,7 +126,7 @@ const Profile = (props) => {
                     fullWidth
                     variant="contained"
                     className={classes.delete}  
-                    onClick={deleteAccount}>Delete</Button> 
+                    onClick={deleteAccount}>{!loading? 'Delete': '..Loading'}</Button> 
                 <Button type="submit"
                     fullWidth
                     color="secondary"
@@ -146,10 +139,12 @@ const Profile = (props) => {
     }
     
     const deleteAccount = async () => {
+        setLoading(true)
         try{
             const response =  await axios.delete('https://read-it-react.herokuapp.com/user/deleteAccount')
         console.log(response.data)
         props.onNotification(response.data.response)
+        setLoading(false)
             history.push('/read_it/')
         }catch(err){
             if(err){
@@ -178,7 +173,7 @@ const Profile = (props) => {
 
     const handleDeleteReview = async (id) => {
         try{
-            const response =  await axios.post('https://read-it-react.herokuapp.com/deleteReview', {id})
+        const response =  await axios.post('https://read-it-react.herokuapp.com/deleteReview', {id})
         console.log(response.data)
         props.onNotification(response.data.response)
         const newReviewedBooks = reviewedBooks.filter(review => review.id !== id)
@@ -190,16 +185,14 @@ const Profile = (props) => {
              }
         }
     }
-
     if(!props.isAuthorized){
          return (<div className="notAuthorized">
             <h1>Log in to view your profile</h1>
             <Link to="/read_it/login"> Login</Link></div>)
     }
-
     return(
         <div className="profile">
-       
+       {/* {loading? <Loader /> : null} */}
         <div>            
             <h2>Your Library</h2>
             <div className="library">
@@ -259,7 +252,7 @@ const Profile = (props) => {
             variant="contained"
             color="secondary"
             className={classes.submit}
-            onClick={handleSubmit}>Submit Changes</Button> 
+            onClick={handleSubmit}>{!loading? 'Submit Changes': '...Loading'}</Button> 
          </form>
          <div className="dltBtn btn" onClick={() => setDeleteModel(true)}><BsFillTrashFill />Delete Account</div>
          {deleteModel? showDeleteModel(): null}

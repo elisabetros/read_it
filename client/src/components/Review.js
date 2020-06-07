@@ -35,6 +35,8 @@ const Review = (props) => {
     const [ newReviewText, setNewReviewText] = useState(props.review)    
     const [ editModel, setEditModel ] = useState(false)
     const [ deleteModel, setDeleteModel ] = useState(false)
+    const [ error, setError ] = useState()
+    const [ loading, setLoading ] = useState()
     
     const classes = useStyles()
 
@@ -63,7 +65,7 @@ const Review = (props) => {
     const deleteReview = async () => {
        props.onDelete(props.id)
        setDeleteModel(false)
-           setEditModel(false)
+        setEditModel(false)
     }
     const showEditModel = () => {
         // const review = reviewedBooks.find(review => review.id === id)
@@ -72,6 +74,7 @@ const Review = (props) => {
             <div className="model-content">
             <span className="btn" onClick={() => setEditModel(false)}>X</span>
             <h3>Edit Your Review</h3>
+            {error? <h2 className="big is-danger">{error}</h2>: null}
             <FormControl margin="normal"  fullWidth>
                 <InputLabel htmlFor="title">Title of Review</InputLabel>
                 <Input name="title" type="text"
@@ -84,6 +87,8 @@ const Review = (props) => {
                 <Input name="rating" type="number" 
                 defaultValue={props.rating}
                 id="rating" 
+                min="0"
+                max="5"
                 onChange={(e) => setNewReviewRating(e.target.value)}/>
           </FormControl>
             <FormControl margin="normal"  fullWidth>
@@ -94,14 +99,14 @@ const Review = (props) => {
                     multiline
   onChange={(e) => setNewReviewText(e.target.value)}/>
           </FormControl>
-          
+       
             <Button
             type="submit"
             fullWidth
             variant="contained"
             color="secondary"
             className={classes.submit}
-             onClick={(e) => handleEditReview(e)}>Submit Changes</Button>
+             onClick={(e) => handleEditReview(e)}>{!loading? 'Submit Changes': '..Loading'}</Button>
              
              <div className="dltBtn btn" onClick={() => setDeleteModel(true)}><BsFillTrashFill />Delete Review</div>
             </div>
@@ -110,7 +115,17 @@ const Review = (props) => {
     
 
     const handleEditReview = async () => {
-        if(newReviewRating || newReviewText || newReviewTitle){
+        setError('')
+        
+        if(!newReviewRating || !newReviewText || !newReviewTitle){
+            setError('Missing fields')
+                return
+            }
+            if(newReviewRating < 0 || newReviewRating >5){
+                setError('Rating has to be on the scale 0 to 5')
+                return
+            }
+            setLoading(true)
             try{
                 const response = await axios.post('https://read-it-react.herokuapp.com/updateReview',{
                     reviewID:props.id,
@@ -119,15 +134,14 @@ const Review = (props) => {
                      newReviewRating
                 })
                 console.log(response.data)
+                setLoading(false)
                 setEditModel(false)
             }catch(err){
                 if(err){
                     console.log(err)
-
-        }
+            }
         }
     }
-}
 
     const checkUser = () => {
         if(props.userID === props.user_id){
@@ -154,7 +168,7 @@ const Review = (props) => {
              </div>
             <div className="pub-authors"> 
                 <div>
-                <h5>{props.book_title}</h5>
+                <h5>{props.book_title} by {props.author}</h5>
                 <p>Review by {props.user.first_name} {props.user.last_name}</p>
                 </div>
                  <div className="rating"> {showRating()}</div>

@@ -8,7 +8,7 @@ var cors = require('cors', );
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
-const allowedOrigins = ['http://localhost:3000','https://www.valsdottir.net'];
+const allowedOrigins = ['http://localhost:3000','https://www.valsdottir.net', 'https://valsdottir.net'];
 
 app.use(cors({ 
   credentials:true,

@@ -20,12 +20,14 @@ const useStyles = makeStyles(theme => ({
   }));
 
 const Signup = (props) => {
-  const classes= useStyles()
+  const [ loading, setLoading ] = useState(false)
 
+  const classes= useStyles()
   const { values, errors, handleChange, handleSubmit } = useForm(signup, validate);
 
   async function signup() {
-    console.log(values)
+    // console.log(values)
+    setLoading(true)
     try{        
       const response = await axios.post('https://read-it-react.herokuapp.com/user/register', {
                   firstName:  values.firstName,
@@ -35,6 +37,7 @@ const Signup = (props) => {
                   repeatPassword: values.repeatPassword
        })
        console.log(response)
+       setLoading(false)
        props.onNotification('Signup succsessful')
        props.history.push('/read_it/login')
     }catch(err){
@@ -117,7 +120,7 @@ const Signup = (props) => {
             color="secondary"
             className={classes.submit}
             onClick={handleSubmit}
-            >Sign Up</Button>
+            >{!loading? 'Sign Up' : '...loading' }</Button>
         </form>
         </>
     )
