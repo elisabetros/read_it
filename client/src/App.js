@@ -19,8 +19,9 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import BookDetail from './pages/BookDetail';
 
-import Notification from './components/Notification1';
-// import Error from './components/Error';
+// import Notification from './components/Notification';
+import Error from './components/Error';
+import Notification from './components/Notification';
 
 axios.defaults.withCredentials = true;
 
