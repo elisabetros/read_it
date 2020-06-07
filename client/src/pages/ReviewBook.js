@@ -32,22 +32,24 @@ const ReviewBook = (props) => {
     const [ book, setBook ] = useState()
 
    let { id }= useParams()
-    // console.log(id)
+   
     function validate() {
         let errors = {};
+        if (!values.title) {
+          errors.title = 'A title is required';
+        } 
         if(!values.review){
-          errors.review = 'Firstname is required'
+          errors.review = 'A review is required'
         }
         if(!values.rating){
-          errors.rating = 'Lastname is required'
+          errors.rating = 'Please rate the book on the scale 0 to 5'
         }
-        if (!values.title) {
-          errors.title = 'Password is required';
-        } 
+        
         return errors;
       }
     
     async function reviewBook() {
+        console.log(values)
         try{
             await axios.post('https://read-it-react.herokuapp.com/addReview', {
             reviewText: values.review, 
@@ -88,12 +90,7 @@ const ReviewBook = (props) => {
     }
 
     if(!props.isAuthorized){
-        return(
-            <div className="notAuthorized">
-                <h1>Please login to review this book</h1>
-                <Link to="login">Login</Link>
-            </div>
-            )
+        // props.history.push('/read_it/')
     }
     if(book){
         

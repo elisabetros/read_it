@@ -88,9 +88,6 @@ const Profile = (props) => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         console.log('submit profile changes')
-        // if(!newEmail || !newFirstname || !newLastname){
-        //                
-        // }
         if(newEmail || newFirstname || newLastname){
             try{
                 const response = await axios.post('https://read-it-react.herokuapp.com/user/update', {

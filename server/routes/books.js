@@ -181,7 +181,7 @@ router.get('/getSingleBookReviews/:id', async (req, res) => {
 
 router.get('/getReviews', async (req, res) => { 
     try{
-        const bookReviews = await BookReview.query().select().withGraphFetched('user')
+        const bookReviews = await BookReview.query().select().withGraphFetched('user').orderBy('asc')
         return res.status(200).send(bookReviews)
     }catch(err){
         if(err){
