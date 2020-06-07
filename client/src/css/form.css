@@ -24,3 +24,7 @@ textarea{
     height:100px;
 }
 
+.is-danger{
+    color:#f44336;
+    font-size: 80%;
+}

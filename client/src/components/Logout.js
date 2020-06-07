@@ -5,7 +5,7 @@ import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles'
 import { useHistory } from 'react-router-dom';
   
-  const useStyles = makeStyles(theme => ({
+  const useStyles = makeStyles( theme => ({
     submit: {
      justifySelf: 'center',
      color:'white'
@@ -19,11 +19,10 @@ const LogOut = (props) => {
     const handleLogout = async () => {
         try{
             const response = await axios('https://read-it-react.herokuapp.com/user/logout')
-            console.log(props)   
+            // console.log(props)   
             if(response.data.response){
                 props.onLogout(false)
                 props.onNotification('You are now logged out')
-                console.log(history.location)
                 if(history.location === '/profile'){
                     props.history.push('/')
                 }

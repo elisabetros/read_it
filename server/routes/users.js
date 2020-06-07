@@ -6,9 +6,6 @@ const saltRounds = 10;
 
 const User = require("../models/User");
 
-
-// TODO: add resetpassword route
-
 router.post('/user/login', async (req, res) => {
     // console.log('login')
     const { email, password } = req.body;
@@ -19,7 +16,7 @@ router.post('/user/login', async (req, res) => {
     const users = await User.query().where({ email }).limit(1);
     const user = users[0]
     if(!user){
-        return res.status(500).send({ error: 'wrong username' })
+        return res.status(500).send({ error: 'Wrong username or password' })
     }
     // console.log(user)
     bcrypt.compare(password, user.password, async (error, isSame) => {
@@ -27,7 +24,7 @@ router.post('/user/login', async (req, res) => {
             return res.status(500).send({ error:'error' })
         }
         if(!isSame){
-            return res.status(500).send({ error: 'wrong password' })
+            return res.status(500).send({ error: 'Wrong username or password' })
         }else{
             if(user.token){
                   await User.query().update({
@@ -44,7 +41,6 @@ router.post('/user/login', async (req, res) => {
 })
 
 router.get('/auth', (req, res) => {
-    // console.log('auth', req.session.user )
     if(!req.session.isLoggedIn){
         return res.status(500).send({error: 'Please Log in'})
     }else{
@@ -59,7 +55,7 @@ router.post('/user/register', (req, res) => {
             return res.status(500).send({error: "missing fields"})
         }
         if(password.length <8){
-            return res.status(500).send({error: "passwords too short"})
+            return res.status(500).send({error: "password too short"})
         }
         if(password !== repeatPassword){
             return res.status(500).send({error: "passwords don't match"})
@@ -73,18 +69,18 @@ router.post('/user/register', (req, res) => {
                     // console.log("this newly hashed password",hashedPassword)
                     const existingUser =  await User.query().select().where({ email:email }).limit(1)
                     if(existingUser[0]){
-                        return res.status(500).send({ error: "user already exists"});
+                        return res.status(500).send({error: "user already exists"});
                     }else{
                         const newUser = await User.query().insert({ 
-                            first_name:firstName,
-                            last_name : lastName,
-                            email:email,
+                            first_name: firstName,
+                            last_name: lastName,
+                            email: email,
                             password: hashedPassword
                         })
-                        return res.status(200).send({ response: newUser })
+                        return res.status(200).send({response: newUser})
                     }
                 }catch(error){
-                    return res.status(500).send({ error: "something went wrong with the database"});
+                    return res.status(500).send({error: "something went wrong with the database"});
                 }
             })
     })
@@ -103,9 +99,6 @@ router.post('/user/update', async (req, res) => {
     if(!newEmail){
         newEmail = req.session.email
     }
-    // if(!newFirstname || !newLastname || !newEmail){
-    //     return res.send({error: 'Missing fields'})
-    // }
     try{
         await User.query().findById(req.session.user.id).patch({
             first_name: newFirstname,
@@ -138,8 +131,5 @@ router.delete('/user/deleteAccount', async (req, res) => {
         return res.status(500).send({ error: "Something went wrong with the database"});
     }
 })
-
-
-
 
 module.exports = router;

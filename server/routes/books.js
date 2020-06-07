@@ -1,13 +1,11 @@
 const router = require('express').Router();
 
-const { raw } = require('objection');
-
 const BookReview = require('../models/BookReview')
 const LikedBook = require('../models/LikedBook')
 
 router.post('/addBookToLibrary', async (req, res) => {
     const { bookID, title, author , img } = req.body
-    console.log(bookID, title, author)
+    // console.log(bookID, title, author)
     if(!req.session.isLoggedIn){
         return res.status(500).send({error: 'You need to be logged in to add a book to your library'})
     }
@@ -40,7 +38,7 @@ router.post('/removeBookFromLibrary', async (req, res) => {
         return res.status(500).send({error: 'You need to be logged in to remove a book from your library'})
     }
     const { likedBookID } = req.body
-    console.log(likedBookID)
+    // console.log(likedBookID)
     if(!likedBookID){
         return res.status(500).send({error: 'no book ID'})
     }
@@ -91,7 +89,6 @@ router.post('/addReview', async (req, res) => {
 
 router.post('/deleteReview', async (req, res) => {
     const { id } = req.body
-    console.log(req.body)
     if(!req.session.isLoggedIn){
         return res.status(500).send({error:'Log in to delete review'})
     }

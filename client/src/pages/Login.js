@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import '../css/form.css'
 
-// import formCss from '../css/form.css'
+import useForm from "../customHooks/useForm";
+
 import { makeStyles } from '@material-ui/styles'
 import {
     Button,
@@ -21,46 +23,58 @@ const useStyles = makeStyles(theme => ({
 
 const Login = (props) => {
     const classes = useStyles()
-    const [ email, setEmail ] = useState("")
-    const [ password, setPassword ] = useState("")
+    
+    const { values, errors, handleChange, handleSubmit } = useForm(login, validate);
 
-    const handleSubmit = async (e) => {
-        props.onError()
-        e.preventDefault()
-        if(!email || !password){
-            props.onError('Missing fields')
-            return;
+    async function login() {
+      console.log(values)
+      try{
+        const response = await axios.post("https://read-it-react.herokuapp.com/user/login", {
+          email:values.email, password:values.password
+              })
+         console.log(response.data)
+        props.onLogin(true)
+        props.onNotification('Login successful')
+        props.history.push('/read_it/profile')
+      }catch(err){
+        if(err){
+          console.log(err.response.data.error);
+           props.onError(err.response.data.error)
         }
-          try{
-            const response = await axios.post("https://read-it-react.herokuapp.com/user/login", {
-              email, password
-          })
-          console.log(response.data)
-         props.onLogin(true)
-          props.onNotification('Login successful')
-            props.history.push('/read_it/profile')
-            
-        }catch(err){
-          if(err){
-            console.log(err.response.data.error);
-            props.onError(err.response.data.error)
-           }
-          }
-        
-        
       }
-// TODO: add forgot password
+    }
+    function validate(){
+      let errors = {};
+      if (!values.email) {
+        errors.email = 'Email address is required';
+      } else if (!/\S+@\S+\.\S+/.test(values.email)) {
+        errors.email = 'Email address is invalid';
+      }
+      if (!values.password) {
+        errors.password = 'Password is required';
+      } else if (values.password.length < 8) {
+        errors.password = 'Password must be 8 or more characters';
+      }
+      return errors;
+    }
+    
     return(
         <div className="loginPage">
         <form method="post" >
             <h1>Log in</h1>
             <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="email">Email Address</InputLabel>
-            <Input id="email" name="email" autoComplete="email" autoFocus onChange={(e) => setEmail(e.target.value)} />
+            <Input id="email" name="email" autoComplete="email" autoFocus onChange={handleChange} />
+            {errors.email && (
+                    <p className="help is-danger">{errors.email}</p>
+                  )}
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="password">Password</InputLabel>
-            <Input name="password" type="password" id="password" autoComplete="current-password" onChange={(e) => setPassword(e.target.value)}/>
+            <Input name="password" type="password" id="password" autoComplete="current-password" onChange={handleChange}/>
+            {errors.password && (
+                    <p className="help is-danger">{errors.password}</p>
+                  )}
           </FormControl>
           <Button
             type="submit"
@@ -69,13 +83,8 @@ const Login = (props) => {
             color="secondary"
             className={classes.submit}
             onClick={(e)=> handleSubmit(e)}
-            >
-            Log in
+            >Log in
           </Button>
-                
-            
-        {/* <Link to="/sendResetEmail">Forgot your Password?</Link> */}
-
         </form>
         <Link to="/read_it/forgotpassword">Forgot Your Password?</Link>
         </div>
