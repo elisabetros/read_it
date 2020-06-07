@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import isAuthorized from "../auth/isAuthorized";
 import { Link, useParams  } from "react-router-dom";
 import  '../css/reviewBook.css'
-
+import useForm from "../customHooks/useForm";
 import axios from 'axios'
 
 import { makeStyles } from '@material-ui/styles'
@@ -25,17 +25,46 @@ const useStyles = makeStyles(theme => ({
 
 
 const ReviewBook = (props) => {
-
+    
     const classes = useStyles()
+    const { values, errors, handleChange, handleSubmit } = useForm(reviewBook, validate);
 
     const [ book, setBook ] = useState()
-    const [ reviewText, setReviewText ] = useState()
-    const [ reviewTitle, setReviewTitle ] = useState()
-    const [ reviewRating, setReviewRating ] = useState()
 
    let { id }= useParams()
     // console.log(id)
-
+    function validate() {
+        let errors = {};
+        if(!values.review){
+          errors.review = 'Firstname is required'
+        }
+        if(!values.rating){
+          errors.rating = 'Lastname is required'
+        }
+        if (!values.title) {
+          errors.title = 'Password is required';
+        } 
+        return errors;
+      }
+    
+    async function reviewBook() {
+        try{
+            await axios.post('https://read-it-react.herokuapp.com/addReview', {
+            reviewText: values.review, 
+            reviewRating: values.rating,
+            bookID:id,
+            reviewTitle: values.title,
+            bookTitle: book.volumeInfo.title,
+            img: book.volumeInfo.imageLinks.smallThumbnail
+        })
+        props.onNotification('Review successfully posted')
+                props.history.push('/read_it/reviews')
+        }catch(err){
+            if(err){
+                props.onError(err.response.data.error)
+             }
+        }
+    }
 
     useEffect(() => {
         let isFetching = true
@@ -51,28 +80,6 @@ const ReviewBook = (props) => {
         fetchBook()
         return () => isFetching = false
     },[id])
-
-    const handleClick = async (e) => {
-        e.preventDefault()
-        console.log('submit review')
-        try{
-            await axios.post('https://read-it-react.herokuapp.com/addReview', {
-            reviewText, 
-            reviewRating,
-            bookID:id,
-            reviewTitle,
-            bookTitle: book.volumeInfo.title,
-            img: book.volumeInfo.imageLinks.smallThumbnail
-        })
-        props.onNotification('Review successfully posted')
-                props.history.push('/read_it/reviews')
-        }catch(err){
-            if(err){
-                props.onError(err.response.data.error)
-             }
-        }
-        
-    }
 
     if(!id){
         return (
@@ -103,28 +110,32 @@ const ReviewBook = (props) => {
             <form>
             <FormControl margin="normal" required fullWidth>
                 <InputLabel htmlFor="title">Title of Review</InputLabel>
-                <Input name="title" type="text" id="title" onChange={(e) => setReviewTitle(e.target.value)}/>
+                <Input name="title" type="text" id="title" onChange={handleChange}/>
+                {errors.title && (
+                    <p className="help is-danger">{errors.title}</p>
+                  )}
           </FormControl>
             <FormControl margin="normal" required fullWidth>
                 <InputLabel htmlFor="rating">Rating</InputLabel>
-                <Input name="rating" type="number" id="rating" onChange={(e) => setReviewRating(e.target.value)}/>
+                <Input name="rating" type="number" id="rating" onChange={handleChange}/>
+                {errors.rating && (
+                    <p className="help is-danger">{errors.rating}</p>
+                  )}
           </FormControl>
             <FormControl margin="normal" required fullWidth>
                 {/* <InputLabel htmlFor="review">Review</InputLabel> */}
-                <TextField required
-          id="standard-textarea"
-          label="Review"
-          multiline
-  onChange={(e) => setReviewText(e.target.value)}/>
-          </FormControl>
-          
+                <TextField required id="standard-textarea" name="review" label="Review" multiline onChange={handleChange}/>
+                {errors.review && (
+                    <p className="help is-danger">{errors.review}</p>
+                  )}
+          </FormControl>          
             <Button
             type="submit"
             fullWidth
             variant="contained"
             color="secondary"
             className={classes.submit}
-             onClick={(e) => handleClick(e)}>Submit Review</Button>
+             onClick={handleSubmit}>Submit Review</Button>
         </form>
       
         </div>
