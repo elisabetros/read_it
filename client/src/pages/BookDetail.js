@@ -4,6 +4,7 @@ import axios from 'axios'
 import '../css/bookDetail.css'
 import parse from 'html-react-parser';
 import Review from "../components/Review";
+import Loader from "../components/Loader";
 
 const BookDetail = (props) => {
 
@@ -48,7 +49,7 @@ const BookDetail = (props) => {
 
 
 if(!book){
-    return <div className="loader">Loading...</div>
+    return <Loader/>
 }
 
 console.log(history)

@@ -36,13 +36,13 @@ const Login = (props) => {
               })
          console.log(response.data)
         props.onLogin(true)
-        setLoading(false)
         props.onNotification('Login successful')
+        setLoading(false)
         props.history.push('/read_it/profile')
       }catch(err){
         if(err){
-          console.log(err.response.data.error);
-           props.onError(err.response.data.error)
+          console.log(err);
+           props.onError(err)
         }
       }
     }

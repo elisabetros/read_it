@@ -95,7 +95,7 @@ export default function Reviews(props) {
                 {searchStr? <div className="clearBtn btn" onClick={() => setClearSearch(true)}>Clear Search</div>:null}
             <form className="searchForm">
                 <FormControl margin="normal" fullWidth>
-                    <InputLabel htmlFor="searchStr">Search for Reviews</InputLabel>
+                    <InputLabel htmlFor="searchStr">Search by title or author of review</InputLabel>
                     <Input name="searchStr" type="text" id="searchStr"  onChange={(e) => setSearchStr(e.target.value)}/>
                 </FormControl>
                 <Button

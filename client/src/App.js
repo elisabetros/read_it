@@ -39,12 +39,13 @@ const App = (props) => {
 
   const clearError = () => {
     setTimeout(() => {
-        setError()
+      console.log( document.querySelector('.errorWrapper'))
+        document.querySelector('.errorWrapper').classList.remove('show')
     }, 2500)
 }
   const clearNotification = () => {
     setTimeout(() => {
-      setNotification()
+      document.querySelector('.notificationWrapper').classList.remove('show')
     },2500)
   }
   const handleAction = (newStatus) => {
@@ -52,10 +53,12 @@ const App = (props) => {
     setLoggedInStatus(newStatus)
 }
   const handleError = (errorMsg) => {
+    document.querySelector('.errorWrapper').classList.add('show')
     setError(errorMsg)
     clearError()
   }
   const handleNotification = (notificationMsg) =>{
+    document.querySelector('.notificationWrapper').classList.add('show')
     setNotification(notificationMsg)
     clearNotification()
   }
@@ -75,12 +78,9 @@ const App = (props) => {
         </nav>
       
      <main>
-     <div className={error? 'show errorWrapper': 'errorWrapper'}>
-            <Error error={error} />
-        </div>
-        <div className={notification? 'show notificationWrapper': 'notificationWrapper'}>
-            <Notification notification={notification} />
-        </div>
+            <Error error={error}  />
+            <Notification notification={notification}/>
+     
       <Switch>
         <Route exact path="/read_it/"
         component={() => <Search onError={handleError} onNotification={handleNotification} />}/>

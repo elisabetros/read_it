@@ -45,7 +45,7 @@ const Search = (props) => {
         e.preventDefault()
         setLoading(true)
         try{
-            const response = await axios(`https://www.googleapis.com/books/v1/volumes?q=${searchString}&keys:${apiCred.key}`,  {
+            const response = await axios(`https://www.googleapis.com/books/v1/volumes?q=${searchString}&keys:${apiCred.key}&maxResults=40`,  {
             withCredentials: false })
         console.log(response.data)
         const bookArray = response.data.items

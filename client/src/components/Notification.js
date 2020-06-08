@@ -3,7 +3,7 @@ import React from 'react'
 const Notification = (props) => {
 // console.log(props)
     return(
-        <div>
+        <div className="notificationWrapper">
             <h3>{props.notification}</h3>
         </div>
     )

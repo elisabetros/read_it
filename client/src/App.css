@@ -106,9 +106,7 @@ button:disabled{
   background: white;
   top:0;
   z-index: 100;
-  left:0;
   right:0;
-  margin:auto;
   width: 40vw;
   color: #fff;
   border-radius: 5px;
@@ -119,10 +117,24 @@ button:disabled{
   /* border:3px solid red; */
 }
 .notificationWrapper{
-  background: #333745;
+  background: #009688;
 }
 .show{
-  transform: translateY(0);
+  /* transform: translateY(0); */
+  animation: show 2.5s;
+}
+
+@keyframes show {
+  5%{
+    transform: translateY(0);
+  }
+  80%{
+    
+    transform: translateY(0);
+  }
+  90%{
+    transform: translateY(-100vh);
+  }
 }
 
 .link{

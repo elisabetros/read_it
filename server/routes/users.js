@@ -21,7 +21,7 @@ router.post('/user/login', async (req, res) => {
     // console.log(user)
     bcrypt.compare(password, user.password, async (error, isSame) => {
         if(error){
-            return res.status(500).send({ error:'error' })
+            return res.status(500).send({ error:'Could not sign in, please try again' })
         }
         if(!isSame){
             return res.status(500).send({ error: 'Wrong username or password' })
